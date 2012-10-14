@@ -9,7 +9,6 @@
     <meta name="author" content="Richard Willis">
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="css/jquery.spellchecker.css" rel="stylesheet" />
     <link href="css/demos.css" rel="stylesheet" />
   </head>
@@ -18,20 +17,21 @@
 
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
-        <div class="container-fluid">
+        <div class="container">
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li><a href="#">Documentation</a></li>
-              <li><a href="#">Download</a></li>
-              <li><a href="#">Issues</a></li>
-              <li><a href="#">Github</a></li>
+              <li><a href="/">Home</a></li>
+              <li><a href="https://github.com/badsyntax/jquery-spellchecker/wiki">Documentation</a></li>
+              <li><a href="https://github.com/badsyntax/jquery-spellchecker/downloads">Download</a></li>
+              <li><a href="https://github.com/badsyntax/jquery-spellchecker/issues">Issues</a></li>
+              <li><a href="https://github.com/badsyntax/jquery-spellchecker">Github</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
 
-    <div class="container-fluid">
+    <div class="container">
 
       <div class="hero-unit">
         <h1>jQuery Spellchecker demos</h1>
@@ -43,13 +43,12 @@
             <li><a href="html.html">HTML</a></li>
             <li class="active"><a href="textarea.html">Textarea</a></li>
             <li class=""><a href="#textarea-example">MarkitUp</a></li>
-            <li class=""><a href="demos/jhtmlarea.html">jHtmlArea Demo</a></li>
-            <li class=""><a href="demos/bootstrap-wysihtml5.html">Bootstrap-wysihtml5</a></li>
+            <li class=""><a href="jhtmlarea.html">jHtmlArea</a></li>
+            <li class=""><a href="bootstrap-wysihtml5.html">Bootstrap-wysihtml5</a></li>
           </ul>
 
           <div class="tab-content">
             <div class="tab-pane active in">
-              <div class="span6">
                 <h2>Text parser demo</h2>
                 <div class="well">
                   <p>
@@ -58,18 +57,18 @@
                     </label>
                   </p>
                   <textarea id="textarea-content" style="width:90%" rows="8">Here iz somme badlyy speldt worddz</textarea>
+                  <div id="incorrect-word-list"></div>
                 </div>
                 <div class="form-actions">
                   <button class="btn btn-primary btn-large" id="check-spelling">
                     Check spelling
                   </button>
                 </div>
-              </div>
-              <div class="span6">
+                <hr />
                 <h2>Text parser usage</h2>
                 <pre class="prettyprint linenums">
 // Init the text spellchecker
-var spellchecker = new $.SpellChecker(element, {
+var spellchecker = new $.SpellChecker('.textarea', {
   parser: 'text',
   engine: {
     path: '../php/spellchecker.php',
@@ -95,8 +94,6 @@ spellchecker.on('check.success', function() {
 $("#check-spelling-button").click(function(e){
   spellchecker.check();
 });</pre>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -127,7 +124,10 @@ $("#check-spelling-button").click(function(e){
           }
         },
         suggestBox: {
-          position: 'below'
+          position: 'above'
+        },
+        incorrectWords: {
+          container: '#incorrect-word-list'
         }
       });
        
