@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>jQuery Spellchecker demo</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Richard Willis">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="css/jquery.spellchecker.css" rel="stylesheet" />
+    <link href="css/demos.css" rel="stylesheet" />
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li><a href="#">Documentation</a></li>
+              <li><a href="#">Download</a></li>
+              <li><a href="#">Issues</a></li>
+              <li><a href="#">Github</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+
+      <div class="hero-unit">
+        <h1>jQuery Spellchecker demos</h1>
+      </div>
+
+      <div class="row-fluid">
+          <ul id="myTab" class="nav nav-tabs">
+            <li class="tabs-label">Demos:</li>
+            <li class="active"><a href="html.html">HTML</a></li>
+            <li class=""><a href="textarea.html">Textarea</a></li>
+            <li class=""><a href="markitup.html">MarkitUp</a></li>
+            <li class=""><a href="demos/jhtmlarea.html">jHtmlArea Demo</a></li>
+            <li class=""><a href="demos/bootstrap-wysihtml5.html">Bootstrap-wysihtml5</a></li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane active in" id="html-example">
+              <div class="span6">
+                <h2>HTML parser demo</h2>
+                <div id="html-demo-content" class="well">
+                  <p>
+                    "But I must explain to you how all this mistaken idea of <strong style="font-style:italic;">deno<em>un</em>ncing</strong> pleasure and <strong>praising</strong> pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master builder of human happiness. Noo, one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequencse's that are extremely painful.
+                  </p>              
+                  <p>
+                    Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying caonsequences, or one who avoids a pain that produces no resultant pleasure?"
+                  </p>
+                  <p>
+                    "On the other hand, we anounce with righteous indignations's and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that arre Arre bound sdsasfds to Arre ensue; and equal blame belongs to those who faile in their duty through weakness of will, which is the same as saying through shrinking from toil and pain.
+                  </p>
+                </div>
+                <div class="form-actions">
+                  <button class="btn btn-primary btn-large" id="check-spelling-html">
+                    Check spelling
+                  </button>
+                </div>
+              </div>
+              <div class="span6">
+                <h2>HTML parser usage</h2>
+                <pre class="prettyprint linenums">
+// Init the html spellchecker
+var spellchecker = new $.SpellChecker('#text-content', {
+  parser: 'html',
+  engine: {
+    path: '../php/spellchecker.php',
+    driver: {
+      lang: 'en',
+      type: 'PSpell',
+      dictionary: ''
+    }
+  },
+  suggestBox: {
+    position: 'below'
+  }
+});
+
+// Bind spellchecker handler functions
+spellchecker.on('check.success', function() {
+  alert('There are no incorrectly spelt words!');
+});
+
+// Check the spelling when user clicks on button
+$("#check-spelling-button").click(function(e){
+  spellchecker.check();
+});</pre>
+              </div>
+            </div>
+            <div class="tab-pane" id="textarea-example">
+              <div class="span6">
+                <h2>Text parser demo</h2>
+                <div class="well">
+                  <p>
+                    <label for="text-content">
+                      Add your own text and check the spelling:
+                    </label>
+                  </p>
+                  <textarea id="text-content" style="width:90%" rows="8">Here iz somme badlyy speldt worddz</textarea>
+                </div>
+                <div class="form-actions">
+                  <button class="btn btn-primary btn-large">
+                    Check spelling
+                  </button>
+                </div>
+              </div>
+              <div class="span6">
+                <h2>Text parser usage</h2>
+                <pre class="prettyprint linenums">
+// Init the text spellchecker
+var spellchecker = new $.SpellChecker(element, {
+  parser: 'text',
+  engine: {
+    path: '../php/spellchecker.php',
+    driver: {
+      lang: 'en',
+      type: 'google'
+    }
+  },
+  suggestBox: {
+    position: 'above'
+  },
+  incorrectWords: {
+    container: '#incorrect-word-list'
+  }
+});
+
+// Bind spellchecker handler functions
+spellchecker.on('check.success', function() {
+  alert('There are no incorrectly spelt words.');
+});
+
+// Check the spelling when user clicks on button
+$("#check-spelling-button").click(function(e){
+  spellchecker.check();
+});</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--
+        <div class="span6">
+          <h2>Overview</h2>
+          <p>
+            This page shows how this plugin can be used to check the spelling of a chunk of text.
+          </p>
+          <p>
+            Click on the "Check spelling" button to see the plugin in action.
+          </p>
+          <hr />
+          <a class="btn" href="http://code.google.com/p/jquery-spellchecker/wiki/Documentation">View on Github</a> 
+          <a class="btn" href="http://code.google.com/p/jquery-spellchecker/wiki/Documentation">Download</a> 
+        </div>
+      -->
+      </div>
+
+      <hr>
+
+      <footer>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <script src="js/jquery-1.8.2.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/lib/prettyprint.js"></script>
+    <script src="js/jquery.spellchecker.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+    (function(){
+
+      var spellchecker = new $.SpellChecker('#html-demo-content', {
+        parser: 'html',
+        engine: {
+          path: '../php/spellchecker.php',
+          driver: {
+            lang: 'en',
+            type: 'PSpell',
+            dictionary: ''
+          }
+        },
+        suggestBox: {
+          position: 'below'
+        }
+      });
+       
+      // Bind spellchecker handler functions
+      spellchecker.on('check.success', function() {
+        alert('There are no incorrectly spelt words!');
+      });
+       
+      // Check the spelling when user clicks on button
+      $("#check-spelling-html").click(function(e){
+        spellchecker.check();
+      });
+    })();
+    </script>
+  </body>
+</html>
