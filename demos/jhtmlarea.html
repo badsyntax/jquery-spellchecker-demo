@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>jQuery Spellchecker jHtmlArea demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="stylesheet" href="jhtmlarea/style/jHtmlArea.css" />
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/jquery.spellchecker.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .hero-unit {
+        padding: 20px 40px;
+      }
+      .hero-unit h1 {
+        font-size: 50px;
+      }
+      h2 {
+        font-size: 22px; 
+      }
+      textarea {
+        width: 100%;
+        height: 200px;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/">jQuery Spellchecker</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li><a href="/">Home</a></li>
+              <li><a href="#">Documentation</a></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Demos <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Basic</a></li>
+                  <li class="divider"></li>
+                  <li class="nav-header">WYSIWYG</li>
+                  <li><a href="#">MarkitUp</a></li>
+                  <li><a href="#">jHtmlArea</a></li>
+                  <li><a href="#">bootstrap-wysihtml5</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <h1>jHtmlArea demo</h1>
+
+      <form>
+        <textarea class="textarea">Hello world! Herer are somme badly speldt wordss.</textarea>
+      </form>
+
+      <hr>
+
+      <footer>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <script src="bootstrap-wysihtml5/js/wysihtml5-0.3.0.js"></script>
+    <script src="../js/jquery-1.8.2.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/jquery.spellchecker.js"></script>
+    <script src="jhtmlarea/scripts/jHtmlArea-0.7.5.js"></script>
+
+    <script>
+    $('.textarea').htmlarea({
+      css: '../css/jquery.spellchecker.css',
+      toolbar: [
+          
+          ["bold", "italic", "underline"],
+          ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
+          ["link", "unlink", "|", "image"],
+
+          // custom spellcheck button
+          [{
+            css: "spellchecker-button-icon",
+            text: "Check spelling",
+            action: function(btn) {
+
+              var element = $('#text-content');
+              
+              // Init the text spellchecker
+              var spellchecker = new $.SpellChecker(this.editor.body, {
+                parser: 'html',
+                engine: {
+                  path: "../php/spellchecker.php",
+                  driver: {
+                    lang: 'en',
+                    type: 'pspell'
+                  }
+                },
+                suggestBox: {
+                  position: 'below'
+                }
+              });
+
+              // Bind spellchecker handler functions
+              spellchecker.on('check.success', function() {
+                alert('There are no incorrectly spelt words.');
+              });
+
+              spellchecker.check();
+            }
+          }]
+        ]
+      });
+    </script>
+  </body>
+</html>
