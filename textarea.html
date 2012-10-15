@@ -38,35 +38,35 @@
       </div>
 
       <div class="row-fluid">
-          <ul id="myTab" class="nav nav-tabs">
-            <li class="tabs-label">Demos:</li>
-            <li><a href="html.html">HTML</a></li>
-            <li class="active"><a href="textarea.html">Textarea</a></li>
-            <li class=""><a href="#textarea-example">MarkitUp</a></li>
-            <li class=""><a href="jhtmlarea.html">jHtmlArea</a></li>
-            <li class=""><a href="bootstrap-wysihtml5.html">Bootstrap-wysihtml5</a></li>
-          </ul>
+        <ul class="nav nav-tabs">
+          <li class="tabs-label">Demos:</li>
+          <li><a href="html.html">HTML</a></li>
+          <li class="active"><a href="textarea.html">Textarea</a></li>
+          <li class=""><a href="drivers.html">Drivers</a></li>
+          <li class=""><a href="languages.html">Languages</a></li>
+          <li class=""><a href="#textarea-example">MarkitUp</a></li>
+          <li class=""><a href="jhtmlarea.html">jHtmlArea</a></li>
+          <li class=""><a href="bootstrap-wysihtml5.html">Bootstrap-wysihtml5</a></li>
+        </ul>
 
-          <div class="tab-content">
-            <div class="tab-pane active in">
-                <h2>Text parser demo</h2>
-                <div class="well">
-                  <p>
-                    <label for="text-content">
-                      Add your own text and check the spelling:
-                    </label>
-                  </p>
-                  <textarea id="textarea-content" style="width:90%" rows="8">Here iz somme badlyy speldt worddz</textarea>
-                  <div id="incorrect-word-list"></div>
-                </div>
-                <div class="form-actions">
-                  <button class="btn btn-primary btn-large" id="check-spelling">
-                    Check spelling
-                  </button>
-                </div>
-                <hr />
-                <h2>Text parser usage</h2>
-                <pre class="prettyprint linenums">
+        <h2>Text parser demo</h2>
+        <div class="well">
+          <p>
+            <label for="text-content">
+              Add your own text and check the spelling:
+            </label>
+          </p>
+          <textarea id="textarea-content" style="width:90%" rows="8">Here iz somme badlyy speldt worddz</textarea>
+          <div id="incorrect-word-list"></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary btn-large" id="check-spelling">
+            Check spelling
+          </button>
+        </div>
+        <hr />
+        <h2>Text parser usage</h2>
+        <pre class="prettyprint linenums">
 // Init the text spellchecker
 var spellchecker = new $.SpellChecker('.textarea', {
   parser: 'text',
@@ -94,11 +94,9 @@ spellchecker.on('check.success', function() {
 $("#check-spelling-button").click(function(e){
   spellchecker.check();
 });</pre>
-          </div>
-        </div>
       </div>
 
-      <hr>
+      <hr />
 
       <footer>
       </footer>
