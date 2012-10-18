@@ -64,18 +64,18 @@
           </button>
         </div>
         <hr />
+        <h2>Overview</h2>
+        <p>The spellchecker can be used on any element node in the DOM. It can intelligently replace words, even words spannig across element nodes, which makes it perfect to use in a WYSIWYG editor.</p>
+        <hr />
         <h2>HTML parser usage</h2>
         <pre class="prettyprint linenums">
 // Init the html spellchecker
 var spellchecker = new $.SpellChecker('#text-content', {
+  lang: 'en',
   parser: 'html',
   engine: {
     path: '../php/spellchecker.php',
-    driver: {
-      lang: 'en',
-      type: 'PSpell',
-      dictionary: ''
-    }
+    driver: 'PSpell'
   },
   suggestBox: {
     position: 'below'
@@ -100,8 +100,8 @@ $("#check-spelling-button").click(function(e){
 
     </div> <!-- /container -->
 
-    <script src="js/jquery-1.8.2.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script src="js/lib/jquery-1.8.2.min.js"></script>
+    <script src="js/lib/bootstrap.min.js"></script>
     <script src="js/lib/prettyprint.js"></script>
     <script src="js/jquery.spellchecker.js"></script>
     <script src="js/app.js"></script>
@@ -109,14 +109,11 @@ $("#check-spelling-button").click(function(e){
     (function(){
 
       var spellchecker = new $.SpellChecker('#html-demo-content', {
+        lang: 'en',
         parser: 'html',
         engine: {
           path: '../php/spellchecker.php',
-          driver: {
-            lang: 'en',
-            type: 'PSpell',
-            dictionary: ''
-          }
+          driver: 'PSpell'
         },
         suggestBox: {
           position: 'below',

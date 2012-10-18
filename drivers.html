@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>jQuery Spellchecker - Languages</title>
+    <title>jQuery Spellchecker - Drivers</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -42,29 +42,27 @@
             <li class="tabs-label">Demos:</li>
             <li><a href="html.html">HTML</a></li>
             <li><a href="textarea.html">Textarea</a></li>
-            <li><a href="drivers.html">Drivers</a></li>
-            <li class="active"><a href="languages.html">Languages</a></li>
+            <li class="active"><a href="drivers.html">Drivers</a></li>
+            <li><a href="languages.html">Languages</a></li>
             <li><a href="#textarea-example">MarkitUp</a></li>
             <li><a href="jhtmlarea.html">jHtmlArea</a></li>
             <li><a href="bootstrap-wysihtml5.html">Bootstrap-wysihtml5</a></li>
           </ul>
 
-          <h2>Languages demo</h2>
+          <h2>Drivers demo</h2>
           <div class="well">
             <p>
               <label for="text-content">
                 Add your own text:
               </label>
             </p>
-            <textarea id="textarea-content" style="width:90%" rows="8">Pero debo explicar a usted cómo todo esta idea equivocada de placer y alabando nacció la pena y te darré una explicación completa del sistema, y exponer las verdaderas enseñanzas del gran explorador de la verdad, el maestro de obras de la felicidad humana . No, uno rechaza, le disgusta o evita el placer mismo, ya que es el placer, sino por aquellos que no saben cómo buscar el placer racionalmente encontrar consequencse que son extremadamente dolorosas.</textarea>
-            <label for="language">
-              Language:
+            <textarea id="textarea-content" style="width:90%" rows="8">PHere iz somme badlyy speldt worddz</textarea>
+            <label for="drivers">
+              Driver:
             </label>
-            <select id="language">
-              <option value="en">English</option>
-              <option value="es" selected>Spanish</option>
-              <option value="fr">French</option>
-              <option value="nl">Dutch</option>
+            <select id="driver">
+              <option value="pspell" selected>PSpell</option>
+              <option value="google">Google</option>
             </select>
             <div id="incorrect-word-list"></div>
           </div>
@@ -76,6 +74,11 @@
       </div>
 
       <hr />
+
+      <h2>Overview</h2>
+
+      <p>Drivers are server-side services that check the spelling of text. By default you get PSpell and Google services using PHP.</p>
+      <p>You can easily add different drivers for different server-side solutions.</p>
 
       <footer>
       </footer>
@@ -92,18 +95,18 @@
 
       var spellchecker;
 
-      function create(lang) {
+      function create(driver) {
 
         // Clear the incorrect words
         $('.spellchecker-incorrectwords').remove();
 
         // Create a new spellchecker instance
         spellchecker = new $.SpellChecker('#textarea-content', {
-          lang: lang,
+          lang: 'en',
           parser: 'text',
           engine: {
             path: '../php/spellchecker.php',
-            driver: 'google'
+            driver: driver
           },
           suggestBox: {
             position: 'above'
@@ -125,7 +128,7 @@
       });
 
       // Change the language
-      $('#language').change(function() {
+      $('#driver').change(function() {
         create(this.value);
       }).trigger('change');
 

@@ -9,7 +9,7 @@
     <meta name="author" content="Richard Willis">
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="demos/jhtmlarea/style/jHtmlArea.css" />
+    <link rel="stylesheet" href="js/lib/jhtmlarea/style/jHtmlArea.css" />
     <link href="css/jquery.spellchecker.css" rel="stylesheet" />
     <link href="css/demos.css" rel="stylesheet" />
   </head>
@@ -94,12 +94,10 @@
   
   spellchecker = new $.SpellChecker(body, {
     parser: 'html',
+    lang: 'en',
     engine: {
       path: "../php/spellchecker.php",
-      driver: {
-        lang: 'en',
-        type: 'pspell'
-      }
+      driver: 'pspell'
     },
     suggestBox: {
       position: 'below'
@@ -121,12 +119,12 @@
 
     </div> <!-- /container -->
 
-    <script src="js/jquery-1.8.2.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script src="js/lib/jquery-1.8.2.min.js"></script>
+    <script src="js/lib/bootstrap.min.js"></script>
     <script src="js/lib/prettyprint.js"></script>
     <script src="js/jquery.spellchecker.js"></script>
+    <script src="js/lib/jhtmlarea/scripts/jHtmlArea-0.7.5.js"></script>
     <script src="js/app.js"></script>
-    <script src="demos/jhtmlarea/scripts/jHtmlArea-0.7.5.js"></script>
 
     <script>
     (function(){
@@ -157,13 +155,11 @@
       var body = element[0].jhtmlareaObject.editor.body;
       
       spellchecker = new $.SpellChecker(body, {
+        lang: 'en',
         parser: 'html',
         engine: {
           path: "../php/spellchecker.php",
-          driver: {
-            lang: 'en',
-            type: 'pspell'
-          }
+          driver: 'pspell'
         },
         suggestBox: {
           position: 'below'
