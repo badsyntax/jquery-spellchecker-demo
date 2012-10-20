@@ -4,10 +4,9 @@
  * !! Curl is required to use the google spellchecker API !!
  *
  * @package    jQuery Spellchecker (https://github.com/badsyntax/jquery-spellchecker)
- * @category   Core
  * @author     Richard Willis
  * @copyright  (c) Richard Willis
- * @license    MIT
+ * @license    https://github.com/badsyntax/jquery-spellchecker/blob/master/LICENSE-MIT
  */
 
 class SpellChecker_Driver_Google extends Spellchecker_Driver
@@ -18,17 +17,15 @@ class SpellChecker_Driver_Google extends Spellchecker_Driver
 
   public function get_suggestions()
   {
-    $word = $_POST['word'];
-    
-    $word = urldecode($word);
+    $word = urldecode($_POST['word']);
 
     $suggestions = array();
 
     $matches = $this->get_matches($word);
 
-    if (isset($matches[0][4]) AND trim($matches[0][4]) !== '')
+    if (isset($matches[0][3]) AND trim($matches[0][3]) !== '')
     {
-      $suggestions = explode("\t", $matches[0][4]);
+      $suggestions = explode("\t", $matches[0][3]);
     }
 
     $this->send_data(NULL, $suggestions);
@@ -36,17 +33,17 @@ class SpellChecker_Driver_Google extends Spellchecker_Driver
 
   public function get_incorrect_words()
   {
-    $text = $_POST['text'];
-
-    $text = urldecode($text);
+    $text = urldecode($_POST['text']);
 
     $words = $this->get_matches($text);
 
     $incorrect_words = array();
 
+    $text = utf8_decode($text);
+
     foreach($words as $word)
     {
-      $incorrect_words[] = substr($text, $word[1], $word[2]);
+      $incorrect_words[] = utf8_encode(substr($text, $word[0], $word[1]));
     }
 
     $this->send_data('success', $incorrect_words);
@@ -56,35 +53,40 @@ class SpellChecker_Driver_Google extends Spellchecker_Driver
 
   private function get_matches($text)
   {
+    $xml_response = '';
     $url = 'https://www.google.com/tbproxy/spell?lang='.$this->_config['lang'];
 
-    // Setup XML request
     $body = '<?xml version="1.0" encoding="utf-8" ?>';
     $body .= '<spellrequest textalreadyclipped="0" ignoredups="0" ignoredigits="1" ignoreallcaps="1">';
     $body .= '<text>'.$text.'</text></spellrequest>';
 
-    // response data
-    $xml_response = '';
-
-    // use curl if it exists
-    if (function_exists('curl_init')) {
-      $ch = curl_init();
-      curl_setopt($ch, CURLOPT_URL,$url);
-      curl_setopt($ch, CURLOPT_POST, 1);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-      $xml_response = curl_exec($ch);
-      curl_close($ch);
-    } else {
+    if (!function_exists('curl_init')) {
       exit('Curl is not available');
     }
 
-    // grab and parse content, remove google XML formatting
-    $matches = array();
-    preg_match_all('/<c o="([^"]*)" l="([^"]*)" s="([^"]*)">([^<]*)<\/c>/', $xml_response, $matches, PREG_SET_ORDER);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL,$url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+    $xml_response = curl_exec($ch);
+    curl_close($ch);
 
-    // note: google will return encoded data, no need to encode ut8 characters
+    $xml = simplexml_load_string($xml_response);
+
+    $matches = array();
+
+    foreach($xml->c as $word)
+    {
+      $matches[] = array(
+        (int) $word->attributes()->o,
+        (int) $word->attributes()->l,
+        (int) $word->attributes()->s,
+        (string) $word
+      );
+    }
+
     return $matches;
   }
 }

@@ -1,23 +1,19 @@
 /*
- * jQuery Spellchecker
+ * jQuery Spellchecker - v0.1.0
  * https://github.com/badsyntax/jquery-spellchecker
- *
- * Copyright (c) 2012 Richard Willis
- * Licensed under the MIT license.
+ * Copyright (c) 2012 Richard Willis; Licensed MIT
  */
 
-(function($){
+ (function(window, $) {
 
   /* Config
    *************************/
 
   var defaultConfig = {
+    lang: 'en',
     engine: {
       path: 'spellchecker.php',
-      driver: {
-        type: 'PSpell',
-        lang: 'en',
-      },
+      driver: 'PSpell'
     },
     local: {
       requestError: 'There was an error processing the request.',
@@ -28,7 +24,8 @@
     },
     suggestBox: {
       numWords: 5,
-      position: 'above'
+      position: 'above',
+      offset: 2
     },
     incorrectWords: {
       container: 'body' //selector
@@ -57,26 +54,21 @@
    *************************/
 
   var Events = function(){
-    this.handlers = {};
+    this._handlers = {};
   };
 
   Events.prototype = {
     on: function(name, handler) {
-      if (!this.handlers[name]) {
-        this.handlers[name] = [handler];
-      } else {
-        this.handlers[name].push(handler);
+      if (!this._handlers[name]) {
+        this._handlers[name] = $.Callbacks();
       }
+      this._handlers[name].add(handler);
     },
     trigger: function(name) {
-      var handlers = this.handlers[name];
-      if (!this.handlers) {
-        return;
+      if (this._handlers[name]) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        this._handlers[name].fireWith(this, args);
       }
-      var args = Array.prototype.slice.call(arguments, 1);
-      $.each(handlers, function(i, handler) {
-        handler.apply(this, args);
-      }.bind(this));
     },
     handler: function(name) {
       return function(e) {
@@ -97,12 +89,12 @@
   inherits(Box, Events);
 
   Box.prototype.onSelectWord = function(e) {
-    
+
     e.stopPropagation();
 
     var element = $(e.currentTarget);
     var word = $.trim(element.text());
-    
+
     this.trigger('select.word', e, word, element);
   };
 
@@ -126,6 +118,11 @@
   };
 
   IncorrectWordsBox.prototype.addWords = function(words) {
+
+    // Make array values unique
+    words = $.grep(words, function(el, index){
+        return index === $.inArray(el, words);
+    });
 
     var html = $.map(words, function(word) {
       return '<a href="#">' + word + '</a>';
@@ -168,7 +165,7 @@
 
     var element = $(e.currentTarget);
     var word = $.trim(element.data('word'));
-    
+
     this.trigger('select.word', e, word, element);
   };
 
@@ -177,26 +174,27 @@
 
   var SuggestBox = function(config, element) {
     this.element = element;
+    this.body = this.element[0].nodeName === 'BODY' ? this.element : 'body';
     Box.apply(this, arguments);
   };
   inherits(SuggestBox, Box);
 
   SuggestBox.prototype.bindEvents = function() {
-    this.container.on('click.' + pluginName, this.onContainerClick.bind(this));
-    this.container.on('click.' + pluginName, '.ignore-word', this.handler('ignore.word'));
-    this.container.on('click.' + pluginName, '.ignore-all', this.handler('ignore.all'));
-    this.container.on('click.' + pluginName, '.ignore-forever', this.handler('ignore.forever'));
-    this.container.on('click.' + pluginName, '.words a', this.onSelectWord.bind(this));
-    $('html').on('click.' + pluginName, this.onWindowClick.bind(this));
+    var click = 'click.' + pluginName;
+    this.container.on(click, this.onContainerClick.bind(this));
+    this.container.on(click, '.ignore-word', this.handler('ignore.word'));
+    this.container.on(click, '.ignore-all', this.handler('ignore.all'));
+    this.container.on(click, '.ignore-forever', this.handler('ignore.forever'));
+    this.container.on(click, '.words a', this.onSelectWord.bind(this));
+    $('html').on(click, this.onWindowClick.bind(this));
     if (this.element[0].nodeName === 'BODY') {
-      this.element.parent().on('click.' + pluginName, this.onWindowClick.bind(this));
+      this.element.parent().on(click, this.onWindowClick.bind(this));
     }
   };
 
   SuggestBox.prototype.createBox = function() {
 
     var local = this.config.local;
-    var body = this.element[0].nodeName === 'BODY' ? this.element : 'body';
 
     this.container = $([
       '<div class="' + pluginName + '-suggestbox">',
@@ -206,7 +204,7 @@
       '   <a href="#" class="ignore-forever">' + local.ignoreForever + '</a>',
       ' </div>',
       '</div>'
-    ].join('')).appendTo(body);
+    ].join('')).appendTo(this.body);
 
     this.words = $([
       '<div class="words">',
@@ -223,7 +221,7 @@
   };
 
   SuggestBox.prototype.addWords = function(words) {
-    
+
     var html = $.map(words, function(word) {
       return '<a href="#">' + word + '</a>';
     }).slice(0, this.config.suggestBox.numWords).join('');
@@ -237,9 +235,8 @@
 
   SuggestBox.prototype.loadSuggestedWords = function(getWords, word, wordElement) {
 
-    this.wordElement = wordElement;
+    this.wordElement = $(wordElement);
     this.loading(true);
-    this.position(wordElement);
 
     getWords(word, this.onGetWords.bind(this));
   };
@@ -248,22 +245,37 @@
     this.footer.hide();
     this.open();
     this.words.html(show ? this.loadingMsg : '');
+    this.position();
   };
 
-  SuggestBox.prototype.position = function(element) {
+  SuggestBox.prototype.position = function() {
 
-    element = $(element);
-
+    var win = $(window);
+    var element = this.wordElement.data('firstElement') || this.wordElement;
     var offset = element.offset();
+    var boxOffset = this.config.suggestBox.offset;
+    var containerHeight = this.container.outerHeight();
+
+    var positionAbove = (offset.top - containerHeight - boxOffset);
+    var positionBelow = (offset.top + element.outerHeight() + boxOffset);
+
     var left = offset.left;
-    var positionAbove = (offset.top - this.container.height()) + "px";
-    var positionBelow = (offset.top + element.outerHeight());
-    var top = (this.config.suggestBox.position === 'above') ? positionAbove : positionBelow;
+    var top;
+
+    if (this.config.suggestBox.position === 'below') {
+      top = positionBelow;
+      if (win.height() + win.scrollTop() < positionBelow + containerHeight) {
+        top = positionAbove;
+      }
+    } else {
+      top = positionAbove;
+    }
 
     this.container.css({ top: top, left: left });
   };
 
   SuggestBox.prototype.open = function() {
+    this.position();
     this.container.fadeIn(180);
   };
 
@@ -273,11 +285,19 @@
     }.bind(this));
   };
 
+  SuggestBox.prototype.detach = function() {
+    this.container = this.container.detach();
+  };
+
+  SuggestBox.prototype.reattach = function() {
+    this.container.appendTo(this.body);
+  };
+
   SuggestBox.prototype.onGetWords = function(words) {
     this.loading(false);
     this.addWords(words);
     this.footer.show();
-    this.position(this.wordElement);
+    this.position();
   };
 
   SuggestBox.prototype.onContainerClick = function(e) {
@@ -288,36 +308,36 @@
     this.close();
   };
 
-  /* Spellchecker driver
+  /* Spellchecker engine
    *************************/
 
-  var Driver = function(config) {
+  var Engine = function(config) {
 
     this.config = config;
 
     this.defaultConfig = {
-      url: this.config.engine.path,
+      url: config.engine.path,
       type: 'POST',
       dataType: 'json',
       cache: false,
       data: {
-        lang: this.config.engine.driver.lang,
-        driver: this.config.engine.driver.type
+        lang: config.lang,
+        driver: config.engine.driver
       },
       error: function() {
-        alert(this.config.local.requestError);
+        alert(config.local.requestError);
       }.bind(this)
     };
   };
 
-  Driver.prototype.makeRequest = function(config) {
-    
+  Engine.prototype.makeRequest = function(config) {
+
     var defaultConfig = $.extend(true, {}, this.defaultConfig);
 
     return $.ajax($.extend(true, defaultConfig, config));
   };
 
-  Driver.prototype.checkWords = function(text, callback) {
+  Engine.prototype.checkWords = function(text, callback) {
     return this.makeRequest({
       data: {
         action: 'get_incorrect_words',
@@ -327,7 +347,7 @@
     });
   };
 
-  Driver.prototype.getSuggestedWords = function(word, callback) {
+  Engine.prototype.getSuggestedWords = function(word, callback) {
     return this.makeRequest({
       data: {
         action: 'get_suggestions',
@@ -337,22 +357,7 @@
     });
   };
 
-  /* Spellchecker drivers
-   *************************/
-
-  var Drivers = {};
-
-  Drivers.Pspell = function() {
-    Driver.apply(this, arguments);
-  };
-  inherits(Drivers.Pspell, Driver);
-
-  Drivers.Google = function() {
-    Driver.apply(this, arguments);
-  }
-  inherits(Drivers.Google, Driver);
-
-  /* Spellchecker parser
+  /* Spellchecker base parser
    *************************/
 
   var Parser = function(element) {
@@ -364,11 +369,10 @@
     var tagExpression = '<[^>]+>';
     var punctuationExpression = '^[^a-zA-Z\\u00A1-\\uFFFF]|[^a-zA-Z\\u00A1-\\uFFFF]+[^a-zA-Z\\u00A1-\\uFFFF]|[^a-zA-Z\\u00A1-\\uFFFF]$|\\n|\\t|\\s{2,}';
 
-    text = $.trim(text);
     text = text.replace(new RegExp(tagExpression, 'g'), ''); // strip any html tags
     text = text.replace(new RegExp(punctuationExpression, 'g'), ' '); // strip any punctuation
 
-    return text;
+    return $.trim(text);
   };
 
   /* Spellchecker text parser
@@ -381,7 +385,7 @@
 
   TextParser.prototype.getText = function() {
     return this.clean(this.element.val());
-  };  
+  };
 
   TextParser.prototype.replaceWordInText = function(text, oldWord, newWord) {
     return text
@@ -416,23 +420,33 @@
   inherits(HtmlParser, Parser);
 
   HtmlParser.prototype.getText = function() {
-    return this.clean(this.element.text());
+
+    var element = this.element
+      .clone()
+      .find('[class^="spellchecker-"]')
+      .remove()
+      .end();
+
+    var text = this.element.text();
+
+    return this.clean(text);
   };
 
-  HtmlParser.prototype.replace = function(regExp, replaceText) {
-    findAndReplaceDOMText(regExp, this.element[0], replaceText);
+  HtmlParser.prototype.replaceText = function(regExp, replaceText) {
+    window.findAndReplaceDOMText(regExp, this.element[0], replaceText);
   };
 
   HtmlParser.prototype.replaceWord = function(oldWord, replacement) {
 
-    findAndReplaceDOMText.revert();
+    window.findAndReplaceDOMText.revert();
 
     var r = replacement;
     var replaced;
     var replaceFill;
     var c;
+    var regExp = new RegExp('\\b' + oldWord + '\\b', 'g');
 
-    this.replace(new RegExp('\\b' + oldWord + '\\b', 'g'), function(fill, i){
+    this.replaceText(regExp, function(fill, i){
 
       // Reset the replacement for each match
       if (i !== c) {
@@ -469,14 +483,31 @@
 
     this.incorrectWords = incorrectWords;
 
-    var exp = '\\b' + incorrectWords.join('|') + '\\b'
-    var regExp = new RegExp(exp, 'g') 
+    var regExp = new RegExp('\\b' + incorrectWords.join('|') + '\\b', 'g');
+    var c;
+    var replaceElement;
 
-    this.replace(regExp, function(fill, i) {
-      return $('<span />', {
+    this.replaceText(regExp, function(fill, i) {
+
+      // Replacement node
+      var span = $('<span />', {
         'class': pluginName + '-word-highlight',
         'data-word': incorrectWords[i]
-      }).text(fill)[0];
+      });
+
+      span.text(fill);
+
+      // If we have a new match
+      if (i !== c) {
+        c = 0;
+        replaceElement = span;
+      }
+
+      // We save the first replacement element so we
+      // can position the suggest box correctly.
+      span.data('firstElement', replaceElement);
+
+      return span[0];
     });
   };
 
@@ -487,10 +518,10 @@
 
     Events.call(this);
 
-    this.element = $(element);
+    this.element = $(element).attr('spellcheck', 'false');
     this.config = $.extend(true, defaultConfig, config);
 
-    this.setupDriver();
+    this.setupEngine();
     this.setupParser();
     this.setupSuggestBox();
     this.setupIncorrectWords();
@@ -498,14 +529,8 @@
   };
   inherits(SpellChecker, Events);
 
-  SpellChecker.prototype.setupDriver = function() {
-
-    var driver = this.config.engine.driver.type;
-
-    driver = driver.toLowerCase();
-    driver = driver.charAt(0).toUpperCase() + driver.slice(1);
-
-    this.driver = new Drivers[driver](this.config);
+  SpellChecker.prototype.setupEngine = function() {
+    this.engine = new Engine(this.config);
   };
 
   SpellChecker.prototype.setupSuggestBox = function() {
@@ -513,27 +538,23 @@
   };
 
   SpellChecker.prototype.setupIncorrectWords = function() {
-    this.incorrectWords = this.config.parser === 'html'
-      ? new IncorrectWordsInline(this.config, this.parser, this.element)
-      : new IncorrectWordsBox(this.config, this.parser, this.element);
+    this.incorrectWords = this.config.parser === 'html' ? 
+      new IncorrectWordsInline(this.config, this.parser, this.element) : 
+      new IncorrectWordsBox(this.config, this.parser, this.element);
   };
 
   SpellChecker.prototype.setupParser = function() {
-    this.parser = this.config.parser === 'html'
-      ? new HtmlParser(this.element)
-      : new TextParser(this.element);
+    this.parser = this.config.parser === 'html' ? 
+      new HtmlParser(this.element) : 
+      new TextParser(this.element);
   };
 
   SpellChecker.prototype.bindEvents = function() {
-
-    this.on('check.success', this.onCheckSuccess.bind(this));
     this.on('check.fail', this.onCheckFail.bind(this));
-
     this.suggestBox.on('ignore.word', this.onIgnoreWord.bind(this));
     this.suggestBox.on('ignore.all', this.onIgnoreAll.bind(this));
     this.suggestBox.on('ignore.forever', this.onIgnoreForever.bind(this));
     this.suggestBox.on('select.word', this.onSuggestedWordSelect.bind(this));
-    
     this.incorrectWords.on('select.word', this.onIncorrectWordSelect.bind(this));
   };
 
@@ -542,38 +563,39 @@
   SpellChecker.prototype.check = function() {
     this.incorrectWords.loading(true);
     var text = this.parser.getText();
-    this.driver.checkWords(text, this.onCheckWords.bind(this));
+    this.engine.checkWords(text, this.onCheckWords.bind(this));
   };
 
   SpellChecker.prototype.showSuggestedWords = function(word, element) {
-    var getWords = this.driver.getSuggestedWords.bind(this.driver);
+    var getWords = this.engine.getSuggestedWords.bind(this.engine);
     this.suggestBox.loadSuggestedWords(getWords, word, element);
   };
 
   /* Event handlers */
 
   SpellChecker.prototype.onCheckWords = function(data) {
-    
+
     this.incorrectWords.loading(false);
 
     var badWords = data.data;
     var outcome = badWords.length ? 'fail' : 'success';
-    
+
     this.trigger('check.' + outcome, badWords);
   };
 
-  SpellChecker.prototype.onCheckSuccess = function() {
-  };
-
   SpellChecker.prototype.onCheckFail = function(badWords) {
+    this.suggestBox.detach();
     this.incorrectWords.addWords(badWords);
+    this.suggestBox.reattach();
   };
 
   SpellChecker.prototype.onSuggestedWordSelect = function(e, word, element) {
     e.preventDefault();
-    this.parser.replaceWord(this.badWord, word);
     this.suggestBox.close();
-    // this.badWordElement.remove();
+    this.suggestBox.detach();
+    this.parser.replaceWord(this.incorrectWord, word);
+    this.suggestBox.reattach();
+    // this.incorrectWordElement.remove();
   };
 
   SpellChecker.prototype.onIgnoreWord = function() {
@@ -590,14 +612,14 @@
 
   SpellChecker.prototype.onIncorrectWordSelect = function(e, word, element) {
     e.preventDefault();
-    this.badWord = word;
-    this.badWordElement = element;
+    this.incorrectWord = word;
+    this.incorrectWordElement = element;
     this.showSuggestedWords(word, element);
   };
 
   $.SpellChecker = SpellChecker;
 
-}(jQuery));
+}(this, jQuery));
 
 /**
  * findAndReplaceDOMText v 0.11
@@ -608,5 +630,265 @@
  * and replaces each match (or node-separated portions of the match)
  * in the specified element.
  *
+ * Example: Wrap 'test' in <em>:
+ *   <p id="target">This is a test</p>
+ *   <script>
+ *     findAndReplaceDOMText(
+ *       /test/,
+ *       document.getElementById('target'),
+ *       'em'
+ *     );
+ *   </script>
  */
-window.findAndReplaceDOMText=function(){function e(e,r,s){var o,u,a=[],f=t(r),l=i(s);if(!f)return;if(e.global)while(o=e.exec(f)){if(!o[0])throw"findAndReplaceDOMText cannot handle zero-length matches";a.push([e.lastIndex-o[0].length,e.lastIndex,o])}else{o=f.match(e),u=f.indexOf(o[0]);if(!o[0])throw"findAndReplaceDOMText cannot handle zero-length matches";a.push([u,u+o[0].length,o])}a.length&&n(r,a,l)}function t(e){if(e.nodeType===3)return e.data;var n="";if(e=e.firstChild)do n+=t(e);while(e=e.nextSibling);return n}function n(e,t,n){var r,i,s,o,u,a,f=[],l=0,c=e,h=t.shift(),p=0;e:for(;;){c.nodeType===3&&(!o&&c.length+l>=h[1]?(o=c,a=h[1]-l):s&&f.push(c),!s&&c.length+l>h[0]&&(s=c,u=h[0]-l),l+=c.length);if(s&&o){c=n({startNode:s,startNodeIndex:u,endNode:o,endNodeIndex:a,innerNodes:f,match:h[2],matchIndex:p}),l-=o.length-a,s=null,o=null,f=[],h=t.shift(),p++;if(!h)break}else if(c.firstChild||c.nextSibling){c=c.firstChild||c.nextSibling;continue}for(;;){if(c.nextSibling){c=c.nextSibling;break}if(c.parentNode===e)break e;c=c.parentNode}}}function i(e){r=[];var t;if(typeof e!="function"){var n=e.nodeType?e:document.createElement(e);t=function(e){var t=document.createElement("div"),r;return t.innerHTML=n.outerHTML||(new XMLSerializer).serializeToString(n),r=t.firstChild,e&&r.appendChild(document.createTextNode(e)),r}}else t=e;return function(n){var i=n.startNode,s=n.endNode,o=n.matchIndex;if(i===s){var u=i;if(n.startNodeIndex>0){var a=document.createTextNode(u.data.substring(0,n.startNodeIndex));u.parentNode.insertBefore(a,u)}var f=t(n.match[0],o);u.parentNode.insertBefore(f,u);if(n.endNodeIndex<u.length){var l=document.createTextNode(u.data.substring(n.endNodeIndex));u.parentNode.insertBefore(l,u)}return u.parentNode.removeChild(u),r.push(function(){var e=f.parentNode;e.insertBefore(f.firstChild,f),e.removeChild(f),e.normalize()}),f}var a=document.createTextNode(i.data.substring(0,n.startNodeIndex)),l=document.createTextNode(s.data.substring(n.endNodeIndex)),c=t(i.data.substring(n.startNodeIndex),o),h=[];for(var p=0,d=n.innerNodes.length;p<d;++p){var v=n.innerNodes[p],m=t(v.data,o);v.parentNode.replaceChild(m,v),h.push(m)}var g=t(s.data.substring(0,n.endNodeIndex),o);return i.parentNode.insertBefore(a,i),i.parentNode.insertBefore(c,i),i.parentNode.removeChild(i),s.parentNode.insertBefore(g,s),s.parentNode.insertBefore(l,s),s.parentNode.removeChild(s),r.push(function(){h.unshift(c),h.push(g);for(var e=0,t=h.length;e<t;++e){var n=h[e],r=n.parentNode;r.insertBefore(n.firstChild,n),r.removeChild(n),r.normalize()}}),g}}var r;return e.revert=function(){for(var t=0,n=r.length;t<n;++t)r[t]();r=[]},e}()
+window.findAndReplaceDOMText = (function() {
+
+  /** 
+   * findAndReplaceDOMText
+   * 
+   * Locates matches and replaces with replacementNode
+   *
+   * @param {RegExp} regex The regular expression to match
+   * @param {Node} node Element or Text node to search within
+   * @param {String|Element|Function} replacementNode A NodeName,
+   *  Node to clone, or a function which returns a node to use
+   *  as the replacement node.
+   */
+  function findAndReplaceDOMText(regex, node, replacementNode) {
+
+    var m, index, matches = [], text = _getText(node);
+    var replaceFn = _genReplacer(replacementNode);
+
+    if (!text) { return; }
+
+    if (regex.global) {
+      while (m = regex.exec(text)) {
+        if (!m[0]) {
+          throw 'findAndReplaceDOMText cannot handle zero-length matches';
+        }
+        matches.push([regex.lastIndex - m[0].length, regex.lastIndex, m]);
+      }
+    } else {
+      m = text.match(regex);
+      index = text.indexOf(m[0]);
+      if (!m[0]) {
+        throw 'findAndReplaceDOMText cannot handle zero-length matches';
+      }
+      matches.push([index, index + m[0].length, m]);
+    }
+
+    if (matches.length) {
+      _stepThroughMatches(node, matches, replaceFn);
+    }
+
+  }
+
+  /**
+   * Gets aggregate text of a node without resorting
+   * to broken innerText/textContent
+   */
+  function _getText(node) {
+
+    if (node.nodeType === 3) {
+      return node.data;
+    }
+
+    var txt = '';
+
+    if (node = node.firstChild) {
+      do {
+        txt += _getText(node);
+      } while (node = node.nextSibling);
+    }
+
+    return txt;
+
+  }
+
+  /** 
+   * Steps through the target node, looking for matches, and
+   * calling replaceFn when a match is found.
+   */
+  function _stepThroughMatches(node, matches, replaceFn) {
+
+    var after, before,
+        startNode,
+        endNode,
+        startNodeIndex,
+        endNodeIndex,
+        innerNodes = [],
+        atIndex = 0,
+        curNode = node,
+        matchLocation = matches.shift(),
+        matchIndex = 0;
+
+    out: while (true) {
+
+      if (curNode.nodeType === 3) {
+        if (!endNode && curNode.length + atIndex >= matchLocation[1]) {
+          // We've found the ending
+          endNode = curNode;
+          endNodeIndex = matchLocation[1] - atIndex;
+        } else if (startNode) {
+          // Intersecting node
+          innerNodes.push(curNode);
+        }
+        if (!startNode && curNode.length + atIndex > matchLocation[0]) {
+          // We've found the match start
+          startNode = curNode;
+          startNodeIndex = matchLocation[0] - atIndex;
+        }
+        atIndex += curNode.length;
+      }
+
+      if (startNode && endNode) {
+        curNode = replaceFn({
+          startNode: startNode,
+          startNodeIndex: startNodeIndex,
+          endNode: endNode,
+          endNodeIndex: endNodeIndex,
+          innerNodes: innerNodes,
+          match: matchLocation[2],
+          matchIndex: matchIndex
+        });
+        // replaceFn has to return the node that replaced the endNode
+        // and then we step back so we can continue from the end of the 
+        // match:
+        atIndex -= (endNode.length - endNodeIndex);
+        startNode = null;
+        endNode = null;
+        innerNodes = [];
+        matchLocation = matches.shift();
+        matchIndex++;
+        if (!matchLocation) {
+          break; // no more matches
+        }
+      } else if (curNode.firstChild || curNode.nextSibling) {
+        // Move down or forward:
+        curNode = curNode.firstChild || curNode.nextSibling;
+        continue;
+      }
+
+      // Move forward or up:
+      while (true) {
+        if (curNode.nextSibling) {
+          curNode = curNode.nextSibling;
+          break;
+        } else if (curNode.parentNode !== node) {
+          curNode = curNode.parentNode;
+        } else {
+          break out;
+        }
+      }
+
+    }
+
+  }
+
+  var reverts;
+  /**
+   * Reverts the last findAndReplaceDOMText process
+   */
+  findAndReplaceDOMText.revert = function revert() {
+    for (var i = 0, l = reverts.length; i < l; ++i) {
+      reverts[i]();
+    }
+    reverts = [];
+  };
+
+  /** 
+   * Generates the actual replaceFn which splits up text nodes
+   * and inserts the replacement element.
+   */
+  function _genReplacer(nodeName) {
+
+    reverts = [];
+
+    var makeReplacementNode;
+
+    if (typeof nodeName !== 'function') {
+      var stencilNode = nodeName.nodeType ? nodeName : document.createElement(nodeName);
+      makeReplacementNode = function(fill) {
+        var clone = document.createElement('div'),
+            el;
+        clone.innerHTML = stencilNode.outerHTML || new window.XMLSerializer().serializeToString(stencilNode);
+        el = clone.firstChild;
+        if (fill) {
+          el.appendChild(document.createTextNode(fill));
+        }
+        return el;
+      };
+    } else {
+      makeReplacementNode = nodeName;
+    }
+
+    return function replace(range) {
+
+      var startNode = range.startNode,
+          endNode = range.endNode,
+          matchIndex = range.matchIndex,
+          before,
+          after;
+
+      if (startNode === endNode) {
+        var node = startNode;
+        if (range.startNodeIndex > 0) {
+          // Add `before` text node (before the match)
+          before = document.createTextNode(node.data.substring(0, range.startNodeIndex));
+          node.parentNode.insertBefore(before, node);
+        }
+
+        // Create the replacement node:
+        var el = makeReplacementNode(range.match[0], matchIndex);
+        node.parentNode.insertBefore(el, node);
+        if (range.endNodeIndex < node.length) {
+          // Add `after` text node (after the match)
+          after = document.createTextNode(node.data.substring(range.endNodeIndex));
+          node.parentNode.insertBefore(after, node);
+        }
+        node.parentNode.removeChild(node);
+        reverts.push(function() {
+          var pnode = el.parentNode;
+          pnode.insertBefore(el.firstChild, el);
+          pnode.removeChild(el);
+          pnode.normalize();
+        });
+        return el;
+      } else {
+        // Replace startNode -> [innerNodes...] -> endNode (in that order)
+        before = document.createTextNode(startNode.data.substring(0, range.startNodeIndex));
+        after = document.createTextNode(endNode.data.substring(range.endNodeIndex));
+        var elA = makeReplacementNode(startNode.data.substring(range.startNodeIndex), matchIndex);
+        var innerEls = [];
+        for (var i = 0, l = range.innerNodes.length; i < l; ++i) {
+          var innerNode = range.innerNodes[i];
+          var innerEl = makeReplacementNode(innerNode.data, matchIndex);
+          innerNode.parentNode.replaceChild(innerEl, innerNode);
+          innerEls.push(innerEl);
+        }
+        var elB = makeReplacementNode(endNode.data.substring(0, range.endNodeIndex), matchIndex);
+        startNode.parentNode.insertBefore(before, startNode);
+        startNode.parentNode.insertBefore(elA, startNode);
+        startNode.parentNode.removeChild(startNode);
+        endNode.parentNode.insertBefore(elB, endNode);
+        endNode.parentNode.insertBefore(after, endNode);
+        endNode.parentNode.removeChild(endNode);
+        reverts.push(function() {
+          innerEls.unshift(elA);
+          innerEls.push(elB);
+          for (var i = 0, l = innerEls.length; i < l; ++i) {
+            var el = innerEls[i];
+            var pnode = el.parentNode;
+            pnode.insertBefore(el.firstChild, el);
+            pnode.removeChild(el);
+            pnode.normalize();
+          }
+        });
+        return elB;
+      }
+    };
+
+  }
+
+  return findAndReplaceDOMText;
+
+}());
