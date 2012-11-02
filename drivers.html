@@ -68,6 +68,7 @@
               </label>
             </p>
             <textarea id="textarea-content" style="width:90%" rows="8">PHere iz somme badlyy speldt worddz</textarea>
+            <div id="incorrect-word-list"></div>
             <label for="drivers">
               Driver:
             </label>
@@ -75,7 +76,6 @@
               <option value="pspell" selected>PSpell</option>
               <option value="google">Google</option>
             </select>
-            <div id="incorrect-word-list"></div>
           </div>
           <div class="form-actions">
             <button class="btn btn-primary btn-large" id="check-spelling">
@@ -85,11 +85,6 @@
       </div>
 
       <hr />
-
-      <h2>Overview</h2>
-
-      <p>Drivers are server-side services that check the spelling of text. By default you get PSpell and Google services using PHP.</p>
-      <p>You can easily add different drivers for different server-side solutions.</p>
 
       <footer>
       </footer>
@@ -115,7 +110,7 @@
         spellchecker = new $.SpellChecker('#textarea-content', {
           lang: 'en',
           parser: 'text',
-          engine: {
+          webservice: {
             path: '../php/spellchecker.php',
             driver: driver
           },

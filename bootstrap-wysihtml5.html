@@ -97,7 +97,7 @@
   var spellchecker = new $.SpellChecker(body, {
     lang: 'en',
     parser: 'html',
-    engine: {
+    webservice: {
       path: "../php/spellchecker.php",
       driver: 'pspell'
     },
@@ -156,7 +156,7 @@
       var spellchecker = new $.SpellChecker(body, {
         lang: 'en',
         parser: 'html',
-        engine: {
+        webservice: {
           path: "../php/spellchecker.php",
           driver: 'pspell'
         },

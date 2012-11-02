@@ -13,6 +13,12 @@
     <link href="css/jquery.spellchecker.css" rel="stylesheet" />
     <link href="css/demos.css" rel="stylesheet" />
 
+    <style type="text/css">
+    div.jHtmlArea .ToolBar ul li a.spellchecker-button-icon {
+      background: transparent;
+    }
+    </style>
+
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-1636725-34']);
@@ -67,7 +73,10 @@
           <div id="incorrect-word-list"></div>
         </div>
         <hr />
-        <h2>jHtmlArea usage</h2>
+        <h2>Overview</h2>
+        <p>This page shows how the spellchecker can be integrated into jHtmlArea editor.</p>
+        <hr />
+        <h2>Usage</h2>
         <p>Include the neccessary files:</p>
         <pre class="prettyprint linenums">
 &lt;link rel="stylesheet" href="jhtmlarea/style/jHtmlArea.css" /&gt;
@@ -76,6 +85,11 @@
 &lt;script src="js/jquery-1.8.2.min.js"&gt;&lt;/script&gt;
 &lt;script src="js/jquery.spellchecker.js"&gt;&lt;/script&gt;
 &lt;script src="jhtmlarea/scripts/jHtmlArea-0.7.5.js"&gt;&lt;/script&gt;</pre>
+        <p>Add the following CSS:</p>
+        <pre class="prettyprint linenums lang-css">
+div.jHtmlArea .ToolBar ul li a.spellchecker-button-icon {
+  background: transparent;
+}</pre>
         <p>Init the jHtmlArea editor and the Spellchecker:</p>
         <pre class="prettyprint linenums">
 (function(){
@@ -108,7 +122,7 @@
   spellchecker = new $.SpellChecker(body, {
     parser: 'html',
     lang: 'en',
-    engine: {
+    webservice: {
       path: "../php/spellchecker.php",
       driver: 'pspell'
     },
@@ -170,7 +184,7 @@
       spellchecker = new $.SpellChecker(body, {
         lang: 'en',
         parser: 'html',
-        engine: {
+        webservice: {
           path: "../php/spellchecker.php",
           driver: 'pspell'
         },

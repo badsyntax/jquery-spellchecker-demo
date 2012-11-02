@@ -85,7 +85,7 @@
 var spellchecker = new $.SpellChecker('.textarea', {
   lang: 'en',
   parser: 'text',
-  engine: {
+  webservice: {
     path: '../php/spellchecker.php',
     driver: 'google'
   },
@@ -126,7 +126,7 @@ $("#check-spelling-button").click(function(e){
       var spellchecker = new $.SpellChecker('#textarea-content', {
         lang: 'en',
         parser: 'text',
-        engine: {
+        webservice: {
           path: '../php/spellchecker.php',
           driver: 'PSpell'
         },

@@ -15,6 +15,15 @@
     <link href="css/jquery.spellchecker.css" rel="stylesheet" />
     <link href="css/demos.css" rel="stylesheet" />
 
+    <style type="text/css">
+    .markItUp .spellchecker-button-icon {
+      background-position: top center;
+    }
+    .markItUp .spellchecker-button-icon a {
+      background: none;
+    }
+    </style>
+
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-1636725-34']);
@@ -74,27 +83,86 @@
           <p>This page shows how the spellchecker can be integrated into markItUp editor.</p>
           <hr />
         <h2>Usage</h2>
+        <p>Include the neccessary files:</p>
+        <pre class="prettyprint linenums">
+&lt;link rel="stylesheet" href="markitup/skins/markitup/style.css" /&gt;
+&lt;link rel="stylesheet" href="markitup/sets/default/style.css" /&gt;
+&lt;link rel="stylesheet" href="jquery.spellchecker.css" /&gt;
+
+&lt;script src="js/jquery-1.8.2.min.js"&gt;&lt;/script&gt;
+&lt;script src="js/jquery.spellchecker.js"&gt;&lt;/script&gt;
+&lt;script src="markitup/jquery.markitup.js"&gt;&lt;/script&gt;
+&lt;script src="markitup/sets/default/set.js"&gt;&lt;/script&gt;</pre>
+        <p>Add the following CSS:</p>
+        <pre class="prettyprint linenums lang-css">
+.markItUp .spellchecker-button-icon {
+  background-position: top center;
+}
+.markItUp .spellchecker-button-icon a {
+  background: none;
+}</pre>
+        <p>Add a spellchecker button to the toolbar and init the spellchecker:</p>
         <pre class="prettyprint linenums">
 (function() {
 
   var spellchecker;
 
-  var settings = {  
-    onShiftEnter:   {keepDefault:false, replaceWith:'&lt;br /&gt;\n'},
-    onCtrlEnter:    {keepDefault:false, openWith:'\n&lt;p&gt;', closeWith:'&lt;/p&gt;'},
-    onTab:        {keepDefault:false, replaceWith:'    '},
-    markupSet:  [   
-      {name:'Bold', key:'B', openWith:'(!(&lt;strong&gt;|!|&lt;b&gt;)!)', closeWith:'(!(&lt;/strong&gt;|!|&lt;/b&gt;)!)' },
-      {name:'Italic', key:'I', openWith:'(!(&lt;em&gt;|!|&lt;i&gt;)!)', closeWith:'(!(&lt;/em&gt;|!|&lt;/i&gt;)!)'  },
-      {name:'Stroke through', key:'S', openWith:'&lt;del&gt;', closeWith:'&lt;/del&gt;' },
-      {separator:'---------------' },
-      {name:'Picture', key:'P', replaceWith:'&lt;img src="[![Source:!:http://]!]" alt="[![Alternative text]!]" /&gt;' },
-      {name:'Link', key:'L', openWith:'&lt;a href="[![Link:!:http://]!]"(!( title="[![Title]!]")!)&gt;', closeWith:'&lt;/a&gt;', placeHolder:'Your text to link...' },
-      {separator:'---------------' },
-      {name:'Clean', className:'clean', replaceWith:function(markitup) { return markitup.selection.replace(/&lt;(.*?)&gt;/g, "") } },   
-      {name:'Preview', className:'preview',  call:'preview'},
-      {name:'Spellcheck', className:'spellcheck', beforeInsert:function(markitup) { SpellChecker(markitup, "en"); } }
-    ]
+  var settings = {
+     onShiftEnter: {
+      keepDefault: false,
+      replaceWith: '&lt;br /&gt;\n'
+     },
+     onCtrlEnter: {
+      keepDefault: false,
+      openWith: '\n&lt;p&gt;',
+      closeWith: '&lt;/p&gt;'
+     },
+     onTab: {
+      keepDefault: false,
+      replaceWith: '    '
+     },
+     markupSet: [{
+      name: 'Bold',
+      key: 'B',
+      openWith: '(!(&lt;strong>|!|&lt;b&gt;)!)',
+      closeWith: '(!(&lt;/strong>|!|&lt;/b&gt;!)'
+     }, {
+      name: 'Italic',
+      key: 'I',
+      openWith: '(!(&lt;em>|!|&lt;i&gt;)!)',
+      closeWith: '(!(&lt;/em>|!|&lt;/i&gt;)!)'
+     }, {
+      name: 'Stroke through',
+      key: 'S',
+      openWith: '&lt;del&gt;',
+      closeWith: '&lt;/del&gt;'
+     }, {
+      separator: '---------------'
+     }, {
+      name: 'Picture',
+      key: 'P',
+      replaceWith: '&lt;img src="[![Source:!:http://]!]" alt="[![Alternative text]!]" /&gt;'
+     }, {
+      name: 'Link',
+      key: 'L',
+      openWith: '&lt;a href="[![Link:!:http://]!]"(!( title="[![Title]!]")!)&gt;',
+      closeWith: '&lt;/a&gt;',
+      placeHolder: 'Your text to link...'
+     }, {
+      separator: '---------------'
+     }, {
+      name: 'Clean',
+      className: 'clean',
+      replaceWith: function (markitup) {
+        return markitup.selection.replace(/&lt;(.*?)&gt;/g, "")
+      }
+     }, {
+      name: 'Spellcheck',
+      className: 'spellchecker-button-icon',
+      beforeInsert: function (markitup) {
+        SpellChecker(markitup, "en");
+      }
+    }]
   };
 
   $('.textarea').markItUp(settings);
@@ -106,7 +174,7 @@
       spellchecker = new $.SpellChecker(markitup.textarea, {
         lang: 'en',
         parser: 'text',
-        engine: {
+        webservice: {
           path: '../php/spellchecker.php',
           driver: 'PSpell'
         },
@@ -117,6 +185,7 @@
           container: '#incorrect-word-list'
         }
       });
+
       // Bind spellchecker handler functions
       spellchecker.on('check.success', function() {
         alert('There are no incorrectly spelt words!');
@@ -148,64 +217,60 @@
 
       var settings = {
          onShiftEnter: {
-             keepDefault: false,
-             replaceWith: '<br />\n'
+          keepDefault: false,
+          replaceWith: '<br />\n'
          },
          onCtrlEnter: {
-             keepDefault: false,
-             openWith: '\n<p>',
-             closeWith: '</p>'
+          keepDefault: false,
+          openWith: '\n<p>',
+          closeWith: '</p>'
          },
          onTab: {
-             keepDefault: false,
-             replaceWith: '    '
+          keepDefault: false,
+          replaceWith: '    '
          },
          markupSet: [{
-             name: 'Bold',
-             key: 'B',
-             openWith: '(!(<strong>|!|<b>)!)',
-             closeWith: '(!(</strong>|!|</b>)!)'
+          name: 'Bold',
+          key: 'B',
+          openWith: '(!(<strong>|!|<b>)!)',
+          closeWith: '(!(</strong>|!|</b>)!)'
          }, {
-             name: 'Italic',
-             key: 'I',
-             openWith: '(!(<em>|!|<i>)!)',
-             closeWith: '(!(</em>|!|</i>)!)'
+          name: 'Italic',
+          key: 'I',
+          openWith: '(!(<em>|!|<i>)!)',
+          closeWith: '(!(</em>|!|</i>)!)'
          }, {
-             name: 'Stroke through',
-             key: 'S',
-             openWith: '<del>',
-             closeWith: '</del>'
+          name: 'Stroke through',
+          key: 'S',
+          openWith: '<del>',
+          closeWith: '</del>'
          }, {
-             separator: '---------------'
+          separator: '---------------'
          }, {
-             name: 'Picture',
-             key: 'P',
-             replaceWith: '<img src="[![Source:!:http://]!]" alt="[![Alternative text]!]" />'
+          name: 'Picture',
+          key: 'P',
+          replaceWith: '<img src="[![Source:!:http://]!]" alt="[![Alternative text]!]" />'
          }, {
-             name: 'Link',
-             key: 'L',
-             openWith: '<a href="[![Link:!:http://]!]"(!( title="[![Title]!]")!)>',
-             closeWith: '</a>',
-             placeHolder: 'Your text to link...'
+          name: 'Link',
+          key: 'L',
+          openWith: '<a href="[![Link:!:http://]!]"(!( title="[![Title]!]")!)>',
+          closeWith: '</a>',
+          placeHolder: 'Your text to link...'
          }, {
-             separator: '---------------'
+          separator: '---------------'
          }, {
-             name: 'Clean',
-             className: 'clean',
-             replaceWith: function (markitup) {
-                 return markitup.selection.replace(/<(.*?)>/g, "")
-             }
+          name: 'Clean',
+          className: 'clean',
+          replaceWith: function (markitup) {
+            return markitup.selection.replace(/<(.*?)>/g, "")
+          }
          }, {
-             name: 'Preview',
-             className: 'preview',
-             call: 'preview'
-         }, {
-             name: 'Spellcheck',
-             className: 'spellcheck',
-             beforeInsert: function (markitup) {
-                 SpellChecker(markitup, "en");
-             }
-         }]
+          name: 'Spellcheck',
+          className: 'spellchecker-button-icon',
+          beforeInsert: function (markitup) {
+            SpellChecker(markitup, "en");
+          }
+        }]
       };
 
       $('.textarea').markItUp(settings);
@@ -217,7 +282,7 @@
           spellchecker = new $.SpellChecker(markitup.textarea, {
             lang: 'en',
             parser: 'text',
-            engine: {
+            webservice: {
               path: '../php/spellchecker.php',
               driver: 'PSpell'
             },
@@ -228,6 +293,7 @@
               container: '#incorrect-word-list'
             }
           });
+
           // Bind spellchecker handler functions
           spellchecker.on('check.success', function() {
             alert('There are no incorrectly spelt words!');
