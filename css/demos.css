@@ -12,11 +12,9 @@ body {
 .hero-unit p {
   font-size: 18px;
 }
-h2 {
-  font-size: 22px; 
-}
-h3 {
-  font-size: 18px;
+
+h1,h2,h3 {
+  font-family: 'Ubuntu Condensed', sans-serif;
 }
 
 .nav-tabs > li.tabs-label {
