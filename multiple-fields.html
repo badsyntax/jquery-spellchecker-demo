@@ -103,35 +103,92 @@
         <pre class="prettyprint linenums">
 (function() {
 
-  var fields = $('input:text,textarea');
-  
-  // Init the text spellchecker
-  var spellchecker = new $.SpellChecker(fields, {
-    lang: 'en',
-    parser: 'text',
-    webservice: {
-      path: '../../webservices/php/spellchecker.php',
-      driver: 'pspell'
-    },
-    suggestBox: {
-      position: 'above'
-    },
-    incorrectWords: {
-      position: function(container) {
-        this.after(container);
-      }
-    }
-  });
+  // This code will only work with Twitter Bootstrap
 
-  // Bind spellchecker handler functions
-  spellchecker.on('check.success', function() {
-    alert('There are no incorrectly spelt words.');
-  });
+  var toggle = (function() {
+  
+    var fields = $('input:text,textarea');
+    var spellchecker = null;
+
+    function showPopover() {
+      $('.popover').hide().find('.popover-content').each(function(){ 
+        if ($(this).find('a').length) {
+          $(this).parents('.popover').show();
+          return false;
+        }
+      });
+    }
+
+    function create() {
+
+      spellchecker = new $.SpellChecker(fields, {
+        lang: 'en',
+        parser: 'text',
+        webservice: {
+          path: '../php/spellchecker.php',
+          driver: 'pspell'
+        },
+        suggestBox: {
+          position: 'below'
+        },
+        incorrectWords: {
+          position: function(container) {
+            this.after(container);
+          }
+        }
+      });
+
+      spellchecker.on('check.success', function() {
+        alert('There are no incorrectly spelt words.');
+      });
+
+      spellchecker.on('check.fail', function() {
+
+        fields.each(function() {
+            
+          var field = $(this);
+
+          if (field.data('popover')) {
+            return;
+          }
+          
+          field.popover({
+            trigger: 'manual',
+            placement: 'bottom',
+            title: '&lt;i class="icon-info-sign"&gt;&lt;/i&gt; Spelling errors'
+          })
+          .popover('show')
+          .data('popover')
+          .$tip
+          .find('.popover-content')
+          .append(field.next());
+        });
+       
+        showPopover();
+      });
+
+      spellchecker.on('replace.word', function(incorrectWords) {
+        showPopover();
+      });
+
+      spellchecker.check();
+    }
+
+    function destroy() {
+      spellchecker.destroy();
+      spellchecker = null;
+      fields.popover('destroy');
+    }
+
+    function toggle() {
+      (!spellchecker) ? create() : destroy();
+    }
+  
+    return toggle;
+  })();
 
   // Check the spelling
-  $("#check-textarea").click(function(e){
-    spellchecker.check();
-  });
+  $("#check-spelling").click(toggle);
 })();</pre>
 </div></div>
       </div>
@@ -148,93 +205,93 @@
     <script src="js/jquery.spellchecker.js"></script>
     <script src="js/app.js"></script>
     <script>
-    (function() {
+(function() {
 
-      var toggle = (function() {
-      
-        var fields = $('input:text,textarea');
-        var spellchecker = null;
+  var toggle = (function() {
+  
+    var fields = $('input:text,textarea');
+    var spellchecker = null;
 
-        function showPopover() {
-          $('.popover').hide().find('.popover-content').each(function(){ 
-            if ($(this).find('a').length) {
-              $(this).parents('.popover').show();
-              return false;
-            }
-          });
+    function showPopover() {
+      $('.popover').hide().find('.popover-content').each(function(){ 
+        if ($(this).find('a').length) {
+          $(this).parents('.popover').show();
+          return false;
         }
+      });
+    }
 
-        function create() {
+    function create() {
 
-          spellchecker = new $.SpellChecker(fields, {
-            lang: 'en',
-            parser: 'text',
-            webservice: {
-              path: '../php/spellchecker.php',
-              driver: 'pspell'
-            },
-            suggestBox: {
-              position: 'below'
-            },
-            incorrectWords: {
-              position: function(container) {
-                this.after(container);
-              }
-            }
-          });
-
-          spellchecker.on('check.success', function() {
-            alert('There are no incorrectly spelt words.');
-          });
-
-          spellchecker.on('check.fail', function() {
-
-            fields.each(function() {
-                
-              var field = $(this);
-
-              if (field.data('popover')) {
-                return;
-              }
-              
-              field.popover({
-                trigger: 'manual',
-                placement: 'bottom',
-                title: '<i class="icon-info-sign"></i> Spelling errors'
-              })
-              .popover('show')
-              .data('popover')
-              .$tip
-              .find('.popover-content')
-              .append(field.next());
-            });
-           
-            showPopover();
-          });
-
-          spellchecker.on('replace.word', function(incorrectWords) {
-            showPopover();
-          });
-
-          spellchecker.check();
+      spellchecker = new $.SpellChecker(fields, {
+        lang: 'en',
+        parser: 'text',
+        webservice: {
+          path: '../php/spellchecker.php',
+          driver: 'pspell'
+        },
+        suggestBox: {
+          position: 'below'
+        },
+        incorrectWords: {
+          position: function(container) {
+            this.after(container);
+          }
         }
+      });
 
-        function destroy() {
-          spellchecker.destroy();
-          spellchecker = null;
-          fields.popover('destroy');
-        }
+      spellchecker.on('check.success', function() {
+        alert('There are no incorrectly spelt words.');
+      });
 
-        function toggle() {
-          (!spellchecker) ? create() : destroy();
-        }
-      
-        return toggle;
-      })();
+      spellchecker.on('check.fail', function() {
 
-      // Check the spelling
-      $("#check-spelling").click(toggle);
-    })();
+        fields.each(function() {
+            
+          var field = $(this);
+
+          if (field.data('popover')) {
+            return;
+          }
+          
+          field.popover({
+            trigger: 'manual',
+            placement: 'bottom',
+            title: '<i class="icon-info-sign"></i> Spelling errors'
+          })
+          .popover('show')
+          .data('popover')
+          .$tip
+          .find('.popover-content')
+          .append(field.next());
+        });
+       
+        showPopover();
+      });
+
+      spellchecker.on('replace.word', function(incorrectWords) {
+        showPopover();
+      });
+
+      spellchecker.check();
+    }
+
+    function destroy() {
+      spellchecker.destroy();
+      spellchecker = null;
+      fields.popover('destroy');
+    }
+
+    function toggle() {
+      (!spellchecker) ? create() : destroy();
+    }
+  
+    return toggle;
+  })();
+
+  // Check the spelling
+  $("#check-spelling").click(toggle);
+})();
     </script>
   </body>
 </html>

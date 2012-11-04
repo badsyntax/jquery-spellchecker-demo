@@ -105,10 +105,8 @@ div.jHtmlArea .ToolBar ul li a.spellchecker-button-icon {
 }</pre>
         <p>Init the jHtmlArea editor and the Spellchecker:</p>
         <pre class="prettyprint linenums">
-(function(){
-
-  var spellchecker;
-
+(function() {
+  
   var element = $('#textarea-content');
 
   element.htmlarea({
@@ -124,7 +122,7 @@ div.jHtmlArea .ToolBar ul li a.spellchecker-button-icon {
         css: "spellchecker-button-icon",
         text: "Check spelling",
         action: function(btn) {
-          spellchecker.check();
+          toggle();
         }
       }]
     ]
@@ -132,23 +130,43 @@ div.jHtmlArea .ToolBar ul li a.spellchecker-button-icon {
 
   var body = element[0].jhtmlareaObject.editor.body;
   
-  spellchecker = new $.SpellChecker(body, {
-    parser: 'html',
-    lang: 'en',
-    webservice: {
-      path: "../php/spellchecker.php",
-      driver: 'pspell'
-    },
-    suggestBox: {
-      position: 'below'
+  var toggle = (function() {
+  
+    var spellchecker = null;
+
+    function create() {
+
+      spellchecker = new $.SpellChecker(body, {
+        lang: 'en',
+        parser: 'html',
+        webservice: {
+          path: "../php/spellchecker.php",
+          driver: 'pspell'
+        },
+        suggestBox: {
+          position: 'below'
+        }
+      });
+
+      // Bind spellchecker handler functions
+      spellchecker.on('check.success', function() {
+        alert('There are no incorrectly spelt words.');
+      });
+
+      spellchecker.check();
     }
-  });
 
-  // Bind spellchecker handler functions
-  spellchecker.on('check.success', function() {
-    alert('There are no incorrectly spelt words.');
-  });
+    function destroy() {
+      spellchecker.destroy();
+      spellchecker = null;
+    }
 
+    function toggle() {
+      (!spellchecker) ? create() : destroy();
+    }
+
+    return toggle;
+  })();
 })();</pre>
       </div></div></div>
       <footer>
