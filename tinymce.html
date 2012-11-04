@@ -40,15 +40,31 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li><a href="/">Home</a></li>
-              <li><a href="https://github.com/badsyntax/jquery-spellchecker/wiki">Documentation</a></li>
-              <li><a href="https://github.com/badsyntax/jquery-spellchecker/downloads">Download</a></li>
-              <li><a href="https://github.com/badsyntax/jquery-spellchecker/issues">Issues</a></li>
-              <li><a href="https://github.com/badsyntax/jquery-spellchecker">Github</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
+          <ul class="nav">
+            <li><a href="/">Home</a></li>
+            <li class="dropdown active">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                Demos
+                <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="html.html">HTML</a></li>
+                <li><a href="textarea.html">Textarea</a></li>
+                <li><a href="drivers.html">Drivers</a></li>
+                <li><a href="languages.html">Languages</a></li>
+                <li><a href="multiple-fields.html">Multiple fields</a></li>
+                <li><a href="markitup.html">MarkitUp</a></li>
+                <li><a href="jhtmlarea.html">jHtmlArea</a></li>
+                <li><a href="bootstrap-wysihtml5.html">Bootstrap-wysihtml5</a></li>
+                <li><a href="redactor.html">Redactor</a></li>
+                <li class="active"><a href="tinymce.html">TinyMCE</a></li>
+              </ul>
+            </li>
+            <li><a href="documentation.html">Documentation</a></li>
+            <li><a href="downloads.html">Downloads</a></li>
+            <li><a href="https://github.com/badsyntax/jquery-spellchecker/issues">Issues</a></li>
+            <li><a href="https://github.com/badsyntax/jquery-spellchecker">Github</a></li>
+          </ul>
         </div>
       </div>
     </div>
@@ -56,55 +72,44 @@
     <div class="container">
 
       <div class="hero-unit">
-        <h1>jQuery Spellchecker</h1>
+        <h1>jQuery Spellchecker - TinyMCE demo</h1>
       </div>
-
+       
       <div class="row-fluid">
-          <ul id="myTab" class="nav nav-tabs">
-            <li><a href="html.html">HTML</a></li>
-            <li><a href="textarea.html">Textarea</a></li>
-            <li><a href="drivers.html">Drivers</a></li>
-            <li><a href="languages.html">Languages</a></li>
-            <li><a href="multiple-fields.html">Multiple</a></li>
-            <li><a href="markitup.html">MarkitUp</a></li>
-            <li><a href="jhtmlarea.html">jHtmlArea</a></li>
-            <li><a href="bootstrap-wysihtml5.html">Bootstrap-wysihtml5</a></li>
-            <li><a href="redactor.html">Redactor</a></li>
-            <li class="active"><a href="tinymce.hreftml">TinyMCE</a></li>
+       
+          <p>This page demonstrates how the spellchecker can be integrated into the TinyMCE editor.</p>
+
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#demo" data-toggle="tab">Demo</a></li>
+            <li><a href="#usage" data-toggle="tab">Usage</a></li>
           </ul>
-
-          <h2>TinyMCE spellchecker demo</h2>
-          <p>This page shows how the spellchecker can be integrated into the TinyMCE editor:</p>
-
-          <textarea class="textarea" style="width:90%" rows="10">
-           <p>
-            But I must explain to you how all this mistaken idea of <strong style="font-style:italic;">deno<em>un</em>ncing</strong> pleasure and <strong>praising</strong> pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master builder of human happiness. Noo, one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequencse's that are extremely painful.
-          </p>              
-          <p>
-            Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying caonsequences, or one who avoids a pain that produces no resultant pleasure?
-          </p></textarea>
-          <hr />
-
-        <h2>Usage</h2>
-        <p>1: Download the <a href="https://github.com/badsyntax/jquery-spellchecker/blob/master/src/examples/english/tinymce/plugins/jqueryspellchecker/editor_plugin.js">jQuery Spellchecker TinyMCE plugin</a></p>
-        <p>2: Include the neccessary files:</p>
-        <pre class="prettyprint linenums">
+          <div class="tab-content">
+            <div class="tab-pane active" id="demo">
+              <textarea class="textarea" style="width:90%" rows="10">
+               <p>
+                But I must explain to you how all this mistaken idea of <strong style="font-style:italic;">deno<em>un</em>ncing</strong> pleasure and <strong>praising</strong> pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master builder of human happiness. Noo, one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequencse's that are extremely painful.
+              </p>              
+              <p>
+                Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying caonsequences, or one who avoids a pain that produces no resultant pleasure?
+              </p></textarea>
+            </div>
+            <div class="tab-pane" id="usage">
+              <p>1: Download the <a href="https://github.com/badsyntax/jquery-spellchecker/blob/master/src/examples/english/tinymce/plugins/jqueryspellchecker/editor_plugin.js">jQuery Spellchecker TinyMCE plugin</a></p>
+              <p>2: Include the neccessary files:</p>
+              <pre class="prettyprint linenums">
 &lt;link rel="stylesheet" href="jquery.spellchecker.css" /&gt;
 
 &lt;script src="js/jquery-1.8.2.min.js"&gt;&lt;/script&gt;
 &lt;script src="js/jquery.spellchecker.js"&gt;&lt;/script&gt;
 &lt;script src="js/lib/tinymce/jquery.tinymce.js"&gt;&lt;/script&gt;</pre>
- <p>3: Add the following CSS:</p>
-        <pre class="prettyprint linenums lang-css">
+              <p>3: Add the following CSS:</p>
+              <pre class="prettyprint linenums lang-css">
 .mce_jqueryspellchecker .mceIcon {
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHtSURBVDjLY/j//z8DJZiBKgY49drM9J3idhLEtu+xjvea4nLNqsVspnWr2S6QmF6+Zol2ltpq5QSlmcpxijMxDABp9pjkuMuu28rIpsMi3rLZFKzIus38mm6OuqRxpf41nC5w7rOJd+i1ngnUXGLTbj7Tsskk3rbL8ppZreEu7Ry1mWpJSvHK8Uoz0TWK5U/nYIg8y8rgPsl+l12P1WqgbTPdJtk/AtoWb1CkBdagnqyyWilawVM/Rw/FBQyx540ZGm/eYIg8P43BdYLdSZiEcYXeTJB/TaoNroH8q5OldVIhXE5SKUqhXSNRfZdKvPKVkOrED+L9d/8wN998w+B4XIL40I48K8FQf/O6+7In/7mbb35hsD2qjBKNDLU3ExjKb7pi1Rx61ke89+6fwBVP/jPXXn/HYHlYGiMdMJTe1JJc/PgHQ/X1xQyplznBYuFnmRiiz062nPfof8DSJ/8ZSq8/ZzA9KIEzIQE1Vvuuf/6fufv2M4bgsz4MxVdPui8Cal4C1Jx/+RGDPqpmTANiz7MAvXI+bO2L/5ZzHvzP2Pjif8DCx/8ZMi/fY9DcL0FUUmbwPKkg3Hr7T+WOV//95j/8z5B6/jaD6l4JkvIC0J9FTtPu/2dIPn+PQXG3BFmZiUFzbweDLH7NVMmNAOGld33BRiNUAAAAAElFTkSuQmCC) no-repeat center center !important;
 }</pre>
-
-<hr />
-
-<p>4: Init TinyMCE with the 'jQuerySpellchecker' plugin active:</p>
-
-        <pre class="prettyprint linenums">
+              <hr />
+              <p>4: Init TinyMCE with the 'jQuerySpellchecker' plugin active:</p>
+              <pre class="prettyprint linenums">
 $().ready(function() {
   $('.textarea').tinymce({
     // Location of TinyMCE script
@@ -124,6 +129,8 @@ $().ready(function() {
     theme_advanced_resizing : true
   });
 });</pre>
+            </div>
+          </div>
       </div>
 
       <footer>
