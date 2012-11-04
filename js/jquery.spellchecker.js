@@ -1,5 +1,5 @@
 /*
- * jQuery Spellchecker - v0.2.2 - 2012-11-04
+ * jQuery Spellchecker - v0.2.2
  * https://github.com/badsyntax/jquery-spellchecker
  * Copyright (c) 2012 Richard Willis; Licensed MIT
  */
@@ -316,7 +316,6 @@
     this.footer.hide();
     this.open();
     this.words.html(show ? this.loadingMsg : '');
-    this.position();
   };
 
   SuggestBox.prototype.position = function() {
