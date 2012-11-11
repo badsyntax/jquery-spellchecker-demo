@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>jQuery Spellchecker downloads</title>
+
+    <meta name="description" content="jQuery Spellchecker demos">
+    <meta name="author" content="Richard Willis">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/jquery.spellchecker.css" rel="stylesheet" />
+    <link href="css/demos.css" rel="stylesheet" />
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <ul class="nav">
+            <li><a href="/">Home</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                Demos
+                <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="html.html">HTML</a></li>
+                <li><a href="textarea.html">Textarea</a></li>
+                <li><a href="drivers.html">Drivers</a></li>
+                <li><a href="languages.html">Languages</a></li>
+                <li><a href="multiple-fields.html">Multiple fields</a></li>
+                <li><a href="markitup.html">MarkitUp</a></li>
+                <li><a href="jhtmlarea.html">jHtmlArea</a></li>
+                <li><a href="bootstrap-wysihtml5.html">Bootstrap-wysihtml5</a></li>
+                <li><a href="redactor.html">Redactor</a></li>
+                <li><a href="tinymce.html">TinyMCE</a></li>
+                <li><a href="ckeditor.html">CKEditor</a></li>
+              </ul>
+            </li>
+            <li><a href="documentation.html">Documentation</a></li>
+            <li class="active"><a href="downloads.html">Downloads</a></li>
+            <li><a href="https://github.com/badsyntax/jquery-spellchecker/issues">Issues</a></li>
+            <li><a href="https://github.com/badsyntax/jquery-spellchecker">Github</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="hero-unit">
+        <h1>jQuery Spellchecker</h1>
+      </div>
+
+      <h1 id="documnetation">Documentation</h1>
+      <h2 id="installation">Installation</h2>
+      <p><strong>1:</strong> <a href="https://github.com/badsyntax/jquery-spellchecker/downloads">Download</a> and extract the Spellchecker files</p>
+      <p><strong>2:</strong> Include the jQuery and the Spellchecker files in the head section of your page:</p>
+      <pre class="sourceCode html"><code class="sourceCode html"><span class="kw">&lt;link</span><span class="ot"> href=</span><span class="st">&quot;css/jquery.spellchecker.css&quot;</span><span class="ot"> rel=</span><span class="st">&quot;stylesheet&quot;</span> <span class="kw">/&gt;</span>
+      <span class="kw">&lt;script</span><span class="ot"> src=</span><span class="st">&quot;js/jquery-1.8.2.min.js&quot;</span><span class="kw">&gt;&lt;/script&gt;</span>
+      <span class="kw">&lt;script</span><span class="ot"> src=</span><span class="st">&quot;js/jquery.spellchecker.js&quot;</span><span class="kw">&gt;&lt;/script&gt;</span></code></pre>
+      <p><strong>3:</strong> Ensure your back-end services are set up correctly:</p>
+      <p><strong>PSpell Driver</strong></p>
+      <p>If you want to use the PSpell driver, you will need to install the following software:</p>
+      <pre><code>sudo apt-get install aspell aspell-en
+      sudo apt-get install php5-pspell</code></pre>
+      <p>You can install additional aspell languages with the following command:</p>
+      <pre><code>sudo apt-get install aspell-LANG # replace LANG with the language code</code></pre>
+      <p><strong>Google Driver</strong></p>
+      <p>If you want to use the Google driver, you will need to have cURL installed:</p>
+      <pre><code>sudo apt-get install curl php5-curl</code></pre>
+      <h2 id="usage">Usage</h2>
+      <pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="co">// Create a new spellchecker instance</span>
+      <span class="kw">var</span> spellchecker = <span class="kw">new</span> $.<span class="fu">SpellChecker</span>(<span class="ch">&#39;textarea&#39;</span>, {
+        <span class="dt">lang</span>: <span class="ch">&#39;en&#39;</span>,
+        <span class="dt">parser</span>: <span class="ch">&#39;text&#39;</span>,
+        <span class="dt">webservice</span>: {
+          <span class="dt">path</span>: <span class="ch">&#39;../../webservices/php/SpellChecker.php&#39;</span>,
+          <span class="dt">driver</span>: <span class="ch">&#39;pspell&#39;</span>
+        },
+        <span class="dt">suggestBox</span>: {
+          <span class="dt">position</span>: <span class="ch">&#39;above&#39;</span>
+        },
+        <span class="dt">incorrectWords</span>: {
+          <span class="dt">container</span>: <span class="ch">&#39;#incorrect-word-list&#39;</span>
+        }
+      });
+
+      <span class="co">// Bind spellchecker handler functions</span>
+      <span class="kw">spellchecker</span>.<span class="fu">on</span>(<span class="ch">&#39;check.success&#39;</span>, <span class="kw">function</span>() {
+        alert(<span class="ch">&#39;There are no incorrectly spelt words.&#39;</span>);
+      });
+
+      <span class="co">// Check the spelling</span>
+      $(<span class="st">&quot;button#check&quot;</span>).<span class="fu">click</span>(<span class="kw">function</span>(e){
+        <span class="kw">spellchecker</span>.<span class="fu">check</span>();
+      }); </code></pre>
+      <h2 id="standalone-usage">Standalone usage</h2>
+      <pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">var</span> text = <span class="ch">&#39;Herea is a sentancec. &quot;How are youu?&quot;&#39;</span>;
+
+      <span class="kw">var</span> elem = $(<span class="ch">&#39;&lt;div /&gt;&#39;</span>).<span class="fu">append</span>($.<span class="fu">map</span>(<span class="kw">text</span>.<span class="fu">split</span>(<span class="ch">&#39; &#39;</span>), <span class="kw">function</span>(text, i) {
+        <span class="kw">return</span> <span class="kw">new</span> <span class="kw">Array</span>(i).<span class="fu">join</span>(<span class="ch">&#39;&lt;div&gt;&#39;</span>) + text + <span class="kw">new</span> <span class="kw">Array</span>(<span class="dv">2</span>).<span class="fu">join</span>(<span class="ch">&#39; &lt;/div&gt;&#39;</span>)
+      }).<span class="fu">join</span>(<span class="ch">&#39;&#39;</span>));
+
+      <span class="co">// Creates new spellchecker instances</span>
+      <span class="kw">var</span> spellchecker = <span class="kw">function</span>(parser) {
+        <span class="kw">return</span> <span class="kw">new</span> $.<span class="fu">SpellChecker</span>(null, {
+          <span class="dt">lang</span>: <span class="ch">&#39;en&#39;</span>,
+          <span class="dt">parser</span>: parser,
+          <span class="dt">webservice</span>: {
+            <span class="dt">path</span>: <span class="ch">&#39;../../webservices/php/SpellChecker.php&#39;</span>,
+            <span class="dt">driver</span>: <span class="ch">&#39;pspell&#39;</span>
+          }
+        });
+      };
+
+      <span class="co">// Check for incorrect words in a string of text</span>
+      spellchecker(<span class="ch">&#39;text&#39;</span>).<span class="fu">check</span>(text, <span class="kw">function</span>(incorrectWords) {
+        <span class="kw">console</span>.<span class="fu">log</span>(incorrectWords);
+      });
+
+      <span class="co">// Check for incorrect words in a DOM tree</span>
+      spellchecker(<span class="ch">&#39;html&#39;</span>).<span class="fu">check</span>(elem, <span class="kw">function</span>(incorrectWords) {
+        <span class="kw">console</span>.<span class="fu">log</span>(incorrectWords);
+      });
+
+      <span class="co">// Get spelling suggestions for a word</span>
+      spellchecker(<span class="ch">&#39;text&#39;</span>).<span class="fu">getSuggestions</span>(<span class="ch">&#39;badwordd&#39;</span>, <span class="kw">function</span>(suggestions) {
+       <span class="kw">console</span>.<span class="fu">log</span>(suggestions);
+      });
+
+      <span class="co">// Replace a word in a string of text</span>
+      <span class="kw">var</span> newText = spellchecker(<span class="ch">&#39;text&#39;</span>).<span class="fu">replaceWord</span>(<span class="ch">&#39;Herea&#39;</span>, <span class="ch">&#39;Here&#39;</span>, text);
+      <span class="kw">console</span>.<span class="fu">log</span>(newText);
+
+      <span class="co">// Replace a word in a DOM tree</span>
+      spellchecker(<span class="ch">&#39;html&#39;</span>).<span class="fu">replaceWord</span>(<span class="ch">&#39;Herea&#39;</span>, <span class="ch">&#39;Here&#39;</span>, elem);
+      <span class="kw">console</span>.<span class="fu">log</span>(<span class="kw">elem</span>.<span class="fu">text</span>());</code></pre>
+      <h2 id="config">Config</h2>
+      <p>You can supply custom config when you create a new Spellchecker instance:</p>
+      <pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">var</span> spellchecker = <span class="kw">new</span> $.<span class="fu">SpellChecker</span>(element, config);</code></pre>
+      <p>There are the available config options:</p>
+      <pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">var</span> defaultConfig = {
+        <span class="dt">lang</span>: <span class="ch">&#39;en&#39;</span>,
+        <span class="dt">webservice</span>: {
+          <span class="dt">path</span>: <span class="ch">&#39;spellchecker.php&#39;</span>,
+          <span class="dt">driver</span>: <span class="ch">&#39;PSpell&#39;</span>
+        },
+        <span class="dt">local</span>: {
+          <span class="dt">requestError</span>: <span class="ch">&#39;There was an error processing the request.&#39;</span>,
+          <span class="dt">ignoreWord</span>: <span class="ch">&#39;Ignore word&#39;</span>,
+          <span class="dt">ignoreAll</span>: <span class="ch">&#39;Ignore all&#39;</span>,
+          <span class="dt">ignoreForever</span>: <span class="ch">&#39;Add to dictionary&#39;</span>,
+          <span class="dt">loading</span>: <span class="ch">&#39;Loading...&#39;</span>,
+          <span class="dt">noSuggestions</span>: <span class="ch">&#39;(No suggestions)&#39;</span>
+        },
+        <span class="dt">suggestBox</span>: {
+          <span class="dt">numWords</span>: <span class="dv">5</span>,
+          <span class="dt">position</span>: <span class="ch">&#39;above&#39;</span>,
+          <span class="dt">offset</span>: <span class="dv">2</span>,
+          <span class="dt">appendTo</span>: null
+        },
+        <span class="dt">incorrectWords</span>: {
+          <span class="dt">container</span>: <span class="ch">&#39;body&#39;</span>, <span class="co">//selector</span>
+          <span class="dt">position</span>: null <span class="co">//function</span>
+        }
+      };</code></pre>
+      <h2 id="api-methods">API Methods</h2>
+      <p>Once you’ve created a new instance of the Spellchecker, you have access to some public methods:</p>
+      <pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">var</span> spellchecker = <span class="kw">new</span> $.<span class="fu">SpellChecker</span>(element, config);
+
+      <span class="kw">spellchecker</span>.<span class="fu">check</span>();
+      <span class="kw">spellchecker</span>.<span class="fu">getSuggestions</span>();
+      <span class="kw">spellchecker</span>.<span class="fu">replaceWord</span>();</code></pre>
+      <h2 id="events">Events</h2>
+      <p>You can subscribe to Spellchecker events using the <code>on</code> API method, for example:</p>
+      <pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">var</span> spellchecker = <span class="kw">new</span> $.<span class="fu">SpellChecker</span>(element, config);
+
+      <span class="kw">spellchecker</span>.<span class="fu">on</span>(<span class="ch">&#39;check.success&#39;</span>, <span class="kw">function</span>() {
+        alert(<span class="ch">&#39;Check success event fired!&#39;</span>);
+      });</code></pre>
+      <p>These are the available Spellchecker events you can subscribe to:</p>
+      <ul>
+      <li>check.start</li>
+      <li>check.fail</li>
+      <li>check.success</li>
+      <li>check.complete</li>
+      <li>replace.word.before</li>
+      <li>replace.word</li>
+      <li>select.word</li>
+      </ul>
+      <h2 id="examples">Examples</h2>
+      <p>The easiest way to get started is have a look at the simple examples which can be found in the <a href="https://github.com/badsyntax/jquery-spellchecker/downloads">downloadable package</a>. You can also have a look at some of the <a href="http://jquery-spellchecker.badsyntax.co">online spellchecker demos</a>.</p>
+      <h2 id="building-the-package">Building the package</h2>
+      <p>You’ll need nodejs, grunt and grunt-contrib-copy packages installed.</p>
+    </div> <!-- /container -->
+
+    <script src="js/lib/jquery/jquery-1.8.2.min.js"></script>
+    <script src="js/lib/bootstrap/bootstrap.min.js"></script>
+    <script src="js/lib/prettyprint/prettyprint.js"></script>
+    <script src="js/jquery.spellchecker.js"></script>
+    <script src="js/app.js"></script>
+
+  </body>
+</html>
