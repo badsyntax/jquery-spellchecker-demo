@@ -80,6 +80,7 @@
             <select id="driver">
               <option value="pspell" selected>PSpell</option>
               <option value="google">Google</option>
+              <option value="enchant">Enchant</option>
             </select>
           </div>
           <div class="form-actions">
@@ -114,7 +115,7 @@
           lang: 'en',
           parser: 'text',
           webservice: {
-            path: '../php/spellchecker.php',
+            path: '../webservices/php/SpellChecker.php',
             driver: driver
           },
           suggestBox: {

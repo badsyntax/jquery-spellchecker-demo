@@ -82,12 +82,12 @@
           <div class="tab-content">
             <div class="tab-pane active" id="demo">
               <textarea class="textarea" style="width:90%" rows="10">
-               <p>
+              &lt;p&gt;
                 But I must explain to you how all this mistaken idea of <strong style="font-style:italic;">deno<em>un</em>ncing</strong> pleasure and <strong>praising</strong> pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master builder of human happiness. Noo, one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequencse's that are extremely painful.
-              </p>              
-              <p>
+              &lt;/p&gt;            
+              &lt;p&gt;
                 Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying caonsequences, or one who avoids a pain that produces no resultant pleasure?
-              </p></textarea>
+              &lt;/p&gt;</textarea>
             </div>
             <div class="tab-pane" id="usage">
               <p>1: Download the <a href="https://github.com/badsyntax/jquery-spellchecker/blob/master/src/examples/english/tinymce/plugins/jqueryspellchecker/editor_plugin.js">jQuery Spellchecker TinyMCE plugin</a></p>
@@ -143,13 +143,16 @@ $().ready(function() {
     <!-- Load TinyMCE -->
     <script type="text/javascript" src="js/lib/tinymce/jquery.tinymce.js"></script>
     <script type="text/javascript">
-      $().ready(function() {
+      $(function() {
+
         $('.textarea').tinymce({
           // Location of TinyMCE script
           script_url : 'js/lib/tinymce/tiny_mce.js',
 
           // General options
           theme : "advanced",
+          skin : "o2k7",
+          skin_variant : "silver",
           plugins : "jqueryspellchecker",
 
           // Theme options

@@ -94,7 +94,7 @@ var spellchecker = new $.SpellChecker('#text-content', {
   lang: 'en',
   parser: 'html',
   webservice: {
-    path: '../php/spellchecker.php',
+    path: '../webservices/php/SpellChecker.php',
     driver: 'PSpell'
   },
   suggestBox: {
@@ -131,7 +131,7 @@ $("#check-spelling-button").click(function(e){
         lang: 'en',
         parser: 'html',
         webservice: {
-          path: '../php/spellchecker.php',
+          path: '../webservices/php/SpellChecker.php',
           driver: 'PSpell'
         },
         suggestBox: {
