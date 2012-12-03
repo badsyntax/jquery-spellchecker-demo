@@ -13,7 +13,7 @@
     <link href="css/demos.css" rel="stylesheet" />
 
     <style type="text/css">
-    .cke_button__jqueryspellchecker_icon {
+    .cke_button__spellchecker_icon {
       background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAACXklEQVQ4y22RzU4rRxCFv+oeM+32jOSFDRIrlA3SABJiiaNIyYK7uq9h3UR5kzwBvEF2+VkgiGSzzgNYVnIH4QULhBhAMOMZ8FBZXNsySRYldZ86p3SqjkwmE1qtFlEUAVAUBQBxHBMEAa+vrzw9PVFVFWEYEkURjUaDqqp4fHyE29tbVBVAAVXVd/8FVlXVf/AsyzDee0REVbVS1UpEFODw8JBVbG1t7R1PVas8zwmstSRJAtAG2N/fnwLUdb3E9vb2pgC7u7tLDGA6nRKICNZagBLAGLPoIyJTvuxQAVRVxfPzc3lzc8NsNsNaixER5qUioosBeZ6vrhACvL290Ww2ieMY7z1BEGDquibLsiU5yzIAyrJc2G1vbm4CYK3FWsv6+jobGxs0m024u7ubu1Snqq7RaKiq0u12V1MoVZXJZPLnagr39/dwdXWFqpZpmi7f82jLlXLABxEpe72eHh8fD1S1vL6+xry8vCwv670HaMdxvLQPtEXkmzAMf+n1emGr1Rr0+/2fgXZRFF+OmKZpGccx3W4XEfnROffdPJVSRL4Ow/DXg4MDF0XR8Ozs7C/gZDwel6pKYIzBWksYhojIB+/9T8aYQkQ+AhJF0W87OzvOOTc4PT39G/hhPB6rtRZjDMEinqIoUFWOjo6GDw8P315eXv4OsLW11XTODQeDwWfg+1WxiGDmEZDnOcAf5+fnl865YafT8Z1Ox3vvhxcXF5+BT/8WA0iapixc1HXN9va2AU6SJPkKYDQapUD//8TvBqgqdV0zm81IksQAJ3NOfzQavQVBgLX2nRjgHzGrYAquuDikAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDEyLTEwLTI1VDEyOjQ4OjExKzAyOjAwAaJEMgAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxMi0xMC0yNVQxMjo0ODoxMSswMjowMHD//I4AAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC) !important;
     }
     </style>
@@ -100,35 +100,22 @@
 &lt;script src="js/lib/ckeditor/ckeditor.js"&gt;&lt;/script&gt;</pre>
               <p>3: Add the following CSS:</p>
               <pre class="prettyprint linenums lang-css">
-.cke_button__jqueryspellchecker_icon {
+.cke_button__spellchecker_icon {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAACXklEQVQ4y22RzU4rRxCFv+oeM+32jOSFDRIrlA3SABJiiaNIyYK7uq9h3UR5kzwBvEF2+VkgiGSzzgNYVnIH4QULhBhAMOMZ8FBZXNsySRYldZ86p3SqjkwmE1qtFlEUAVAUBQBxHBMEAa+vrzw9PVFVFWEYEkURjUaDqqp4fHyE29tbVBVAAVXVd/8FVlXVf/AsyzDee0REVbVS1UpEFODw8JBVbG1t7R1PVas8zwmstSRJAtAG2N/fnwLUdb3E9vb2pgC7u7tLDGA6nRKICNZagBLAGLPoIyJTvuxQAVRVxfPzc3lzc8NsNsNaixER5qUioosBeZ6vrhACvL290Ww2ieMY7z1BEGDquibLsiU5yzIAyrJc2G1vbm4CYK3FWsv6+jobGxs0m024u7ubu1Snqq7RaKiq0u12V1MoVZXJZPLnagr39/dwdXWFqpZpmi7f82jLlXLABxEpe72eHh8fD1S1vL6+xry8vCwv670HaMdxvLQPtEXkmzAMf+n1emGr1Rr0+/2fgXZRFF+OmKZpGccx3W4XEfnROffdPJVSRL4Ow/DXg4MDF0XR8Ozs7C/gZDwel6pKYIzBWksYhojIB+/9T8aYQkQ+AhJF0W87OzvOOTc4PT39G/hhPB6rtRZjDMEinqIoUFWOjo6GDw8P315eXv4OsLW11XTODQeDwWfg+1WxiGDmEZDnOcAf5+fnl865YafT8Z1Ox3vvhxcXF5+BT/8WA0iapixc1HXN9va2AU6SJPkKYDQapUD//8TvBqgqdV0zm81IksQAJ3NOfzQavQVBgLX2nRjgHzGrYAquuDikAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDEyLTEwLTI1VDEyOjQ4OjExKzAyOjAwAaJEMgAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxMi0xMC0yNVQxMjo0ODoxMSswMjowMHD//I4AAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC) !important;
 }</pre>
               <hr />
               <p>4: Load the Spellchecker plugin in the CKEditor config:</p>
               <pre class="prettyprint linenums">
-
 // ckeditor/config.js
 
 CKEDITOR.editorConfig = function( config ) {
-  config.plugins =
-    
-    /* The following two plugins are required for the Spellchecker */
-    'jqueryspellchecker,' +
-    'htmlwriter,' +
-    
-    /* Other plugins*/
-    'basicstyles,' +
-    'preview,' +
-    'removeformat,' +
-    'resize,' +
-    'save,' +
-    'sourcearea,' +
-    'toolbar,' +
-    'preview,' +
-    'print,' +
-    'wysiwygarea';
+  
+  // Exising config code here...
+
+  // Extra plugins
+  config.extraPlugins = 'jqueryspellchecker';
 };</pre>
-              <p>5: Init CKEditor with the 'jQuerySpellChecker' button in the toolbar:</p>
+              <p>5: Init CKEditor:</p>
               <pre class="prettyprint linenums">
 (function() {
 
