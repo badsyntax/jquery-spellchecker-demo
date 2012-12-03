@@ -1,5 +1,5 @@
 /*
- * jQuery Spellchecker - v0.2.3
+ * jQuery Spellchecker - v0.2.2
  * https://github.com/badsyntax/jquery-spellchecker
  * Copyright (c) 2012 Richard Willis; Licensed MIT
  */
@@ -446,18 +446,21 @@
     text = text.replace(new RegExp('<[^>]+>', 'g'), ''); // strip any html tags
 
     var puncExpr = [
-      '(^|\\s+)[' + punctuationChars + ']+',                        // punctuation(s) with leading whitespace(s)
+      '(^|\\s+)[' + punctuationChars + ']+',                             // punctuation(s) with leading whitespace(s)
       '[' + punctuationChars + ']+\\s+[' + punctuationChars + ']+', // punctuation(s) with leading and trailing whitespace(s)
-      '[' + punctuationChars + ']+(\\s+|$)'                         // puncutation(s) with trailing whitespace(s)
+      '[' + punctuationChars + ']+(\\s+|$)',                            // puncutation(s) with trailing whitespace(s)
     ].join('|');
 
     text = text.replace(new RegExp(puncExpr, 'g'), ' '); // strip any punctuation
-    text = $.trim(text.replace(/\s{2,}/g, ' '));         // remove extra whitespace
+    text = $.trim(text.replace(/\s{2,}/g, ' '));      // remove extra whitespace
 
     // Remove numbers
     text = $.map(text.split(' '), function(word) {
       return (/^\d+$/.test(word)) ? null : word;
     }).join(' ');
+
+    // Convert white
+    text = text.replace(/\xA0|\s+/mg, ' ');
 
     return text;
   };
@@ -573,11 +576,18 @@
     if (!incorrectWords.length) {
       return;
     }
+
     this.incorrectWords = incorrectWords;
+    incorrectWords = $.map(incorrectWords, function(word) {
+      return RegExp.escape(word);
+    })
 
-    var regExp = new RegExp('(^|[^' + letterChars + '])(' + incorrectWords.join('|') + ')(?=[^' + letterChars + ']|$)', 'g');
+    var regExp = '';
+    regExp += '(^|[^' + letterChars + '])?';
+    regExp += '(' + incorrectWords.join('|') + ')';
+    regExp += '(?=[^' + letterChars + ']|$)?';
 
-    this.replaceText(regExp, element[0], this.highlightWordsHandler(incorrectWords), 2);
+    this.replaceText(new RegExp(regExp, 'g'), element[0], this.highlightWordsHandler(incorrectWords), 2);
   };
 
   HtmlParser.prototype.highlightWordsHandler = function(incorrectWords) {
@@ -586,6 +596,7 @@
     var replaceElement;
 
     return function(fill, i) {
+
       // Replacement node
       var span = $('<span />', {
         'class': pluginName + '-word-highlight'

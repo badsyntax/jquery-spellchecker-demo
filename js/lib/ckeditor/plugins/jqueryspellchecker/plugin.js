@@ -46,10 +46,20 @@ CKEDITOR.plugins.add('jqueryspellchecker', {
   },
 
   create: function() {
-    this.createSpellchecker();
+
     this.editor.setReadOnly(true);
-    this.spellchecker.check();
     this.editor.commands.jqueryspellchecker.toggleState();
+    this.editorWindow = this.editor.document.getWindow().$;
+
+    this.createSpellchecker();
+    this.spellchecker.check();
+    
+    $(this.editorWindow)
+    .on('scroll.spellchecker', $.proxy(function scroll(){
+      if (this.spellchecker.suggestBox) {
+        this.spellchecker.suggestBox.close();
+      }
+    }, this));
   },
 
   destroy: function() {
@@ -59,6 +69,7 @@ CKEDITOR.plugins.add('jqueryspellchecker', {
     this.spellchecker = null;
     this.editor.setReadOnly(false);
     this.editor.commands.jqueryspellchecker.toggleState();
+    $(this.editorWindow).off('.spellchecker');
   },
 
   toggle: function(editor) {
@@ -74,7 +85,7 @@ CKEDITOR.plugins.add('jqueryspellchecker', {
     var t = this;
 
     t.config.getText = function() {
-      return $('<div >').append(t.editor.getData()).text();
+      return $('<div />').append(t.editor.getData()).text();
     };
 
     t.spellchecker = new $.SpellChecker(t.editor.document.$.body, this.config);
@@ -98,6 +109,7 @@ CKEDITOR.plugins.add('jqueryspellchecker', {
 
       var ed = t.editor;
       var word = (this.wordElement.data('firstElement') || this.wordElement)[0];
+      t.curWord = word;
 
       var p1 = $(ed.container.$).find('iframe').offset();
       var p2 = $(ed.container.$).offset();
@@ -105,6 +117,8 @@ CKEDITOR.plugins.add('jqueryspellchecker', {
 
       var left = p3.left + p2.left;
       var top = p3.top + p2.top + (p1.top - p2.top) + word.offsetHeight;
+
+      top -= $(t.editorWindow).scrollTop();
 
       this.container.css({ 
         top: top, 
