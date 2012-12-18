@@ -79,9 +79,18 @@ opacity: .25;
 }
 
 .demo-nav > li > a {
-display: block;
-width: 190px 9;
-margin: 0 0 -1px;
-padding: 8px 14px;
-border: 1px solid #E5E5E5;
+  display: block;
+  width: 190px 9;
+  margin: 0 0 -1px;
+  padding: 8px 14px;
+  border: 1px solid #E5E5E5;
+}
+
+.downloads,
+.downloads li {
+  list-style: none;
+}
+
+.downloads li {
+  padding-bottom: 5px;
 }
