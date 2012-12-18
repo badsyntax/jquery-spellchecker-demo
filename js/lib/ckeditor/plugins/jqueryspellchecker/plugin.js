@@ -1,5 +1,5 @@
 ﻿/*
- * jQuery Spellchecker - CKeditor Plugin - v0.2.2
+ * jQuery Spellchecker - CKeditor Plugin - v0.2.4
  * https://github.com/badsyntax/jquery-spellchecker
  * Copyright (c) 2012 Richard Willis; Licensed MIT
  */
@@ -37,7 +37,8 @@ CKEDITOR.plugins.add('jqueryspellchecker', {
     editor.ui.addButton('jQuerySpellChecker', {
       label: 'SpellCheck',
       icon: 'spellchecker',
-      command: pluginName
+      command: pluginName,
+      toolbar: 'spellchecker,10'
     });
 
     editor.on('saveSnapshot', function() {
@@ -109,7 +110,6 @@ CKEDITOR.plugins.add('jqueryspellchecker', {
 
       var ed = t.editor;
       var word = (this.wordElement.data('firstElement') || this.wordElement)[0];
-      t.curWord = word;
 
       var p1 = $(ed.container.$).find('iframe').offset();
       var p2 = $(ed.container.$).offset();

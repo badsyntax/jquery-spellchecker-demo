@@ -1,5 +1,5 @@
 /*
- * jQuery Spellchecker - v0.2.2
+ * jQuery Spellchecker - v0.2.4 - 2012-12-18
  * https://github.com/badsyntax/jquery-spellchecker
  * Copyright (c) 2012 Richard Willis; Licensed MIT
  */
@@ -446,13 +446,13 @@
     text = text.replace(new RegExp('<[^>]+>', 'g'), ''); // strip any html tags
 
     var puncExpr = [
-      '(^|\\s+)[' + punctuationChars + ']+',                             // punctuation(s) with leading whitespace(s)
+      '(^|\\s+)[' + punctuationChars + ']+',                        // punctuation(s) with leading whitespace(s)
       '[' + punctuationChars + ']+\\s+[' + punctuationChars + ']+', // punctuation(s) with leading and trailing whitespace(s)
-      '[' + punctuationChars + ']+(\\s+|$)',                            // puncutation(s) with trailing whitespace(s)
+      '[' + punctuationChars + ']+(\\s+|$)'                         // puncutation(s) with trailing whitespace(s)
     ].join('|');
 
     text = text.replace(new RegExp(puncExpr, 'g'), ' '); // strip any punctuation
-    text = $.trim(text.replace(/\s{2,}/g, ' '));      // remove extra whitespace
+    text = $.trim(text.replace(/\s{2,}/g, ' '));         // remove extra whitespace
 
     // Remove numbers
     text = $.map(text.split(' '), function(word) {
@@ -572,7 +572,6 @@
   };
 
   HtmlParser.prototype.highlightWords = function(incorrectWords, element) {
-
     if (!incorrectWords.length) {
       return;
     }
@@ -580,7 +579,7 @@
     this.incorrectWords = incorrectWords;
     incorrectWords = $.map(incorrectWords, function(word) {
       return RegExp.escape(word);
-    })
+    });
 
     var regExp = '';
     regExp += '(^|[^' + letterChars + '])?';
@@ -705,6 +704,9 @@
   };
 
   SpellChecker.prototype.getSuggestions = function(word, callback) {
+    if (this.suggestBox) {
+      this.suggestBox.loading(true);
+    }
     this.webservice.getSuggestions(word, callback);
   };
 
