@@ -1,4 +1,8 @@
 (function() {
+	// Prevent embedding the demos in an iframe
+	if (top.location.href !== self.location.href) {
+	  top.location.href = self.location.href;
+	}
   $('head').append(
     '<link href="http://fonts.googleapis.com/css?family=Ubuntu+Condensed" rel="stylesheet" type="text/css">'
   );
