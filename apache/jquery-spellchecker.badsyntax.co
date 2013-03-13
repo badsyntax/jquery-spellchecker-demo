@@ -1,0 +1,9 @@
+<VirtualHost 78.46.128.168:80>
+  DocumentRoot  /home/richard/www/sites/jquery-spellchecker.badsyntax.co
+  ServerName    jquery-spellchecker.badsyntax.co
+
+  RewriteEngine on
+  RewriteCond %{HTTP_HOST} .*
+  RewriteRule example.html / [L,R=301]
+
+</VirtualHost>
